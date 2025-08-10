@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Buat Eskul Baru{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Buat Eskul Baru</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.nama_eskul.id_for_label }}">Nama Eskul <span class="text-danger">*</span></label>
+                                    {{ form.nama_eskul }}
+                                    {% if form.nama_eskul.errors %}
+                                        <div class="text-danger">{{ form.nama_eskul.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.pelatih.id_for_label }}">Pelatih</label>
+                                    {{ form.pelatih }}
+                                    {% if form.pelatih.errors %}
+                                        <div class="text-danger">{{ form.pelatih.errors }}</div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">Pilih pelatih untuk eskul ini (opsional, bisa diubah nanti)</small>
+                                </div>
+                                <div class="form-check mb-3">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                        Aktif
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.deskripsi.id_for_label }}">Deskripsi <span class="text-danger">*</span></label>
+                                    {{ form.deskripsi }}
+                                    {% if form.deskripsi.errors %}
+                                        <div class="text-danger">{{ form.deskripsi.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Buat Eskul</button>
+                            <a href="{% url 'manage_eskul' %}" class="btn btn-secondary">Batal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

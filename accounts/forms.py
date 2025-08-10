@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
+from eskul.models import Eskul
 
 class CreateUserForm(UserCreationForm):
     nama_lengkap = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -25,3 +26,21 @@ class CreateUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class EskulForm(forms.ModelForm):
+    class Meta:
+        model = Eskul
+        fields = ('nama_eskul', 'deskripsi', 'pelatih', 'is_active')
+        widgets = {
+            'nama_eskul': forms.TextInput(attrs={'class': 'form-control'}),
+            'deskripsi': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'pelatih': forms.Select(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter pelatih yang tersedia (hanya yang role pelatih)
+        self.fields['pelatih'].queryset = CustomUser.objects.filter(role='pelatih', is_active=True)
+        self.fields['pelatih'].empty_label = "Belum Ada Pelatih"
+        self.fields['pelatih'].required = False

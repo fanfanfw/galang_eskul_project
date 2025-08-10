@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Tugaskan Pelatih - {{ eskul.nama_eskul }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tugaskan Pelatih ke Eskul: {{ eskul.nama_eskul }}</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Current Pelatih Info -->
+                    <div class="alert alert-info">
+                        <strong>Pelatih Saat Ini:</strong>
+                        {% if eskul.pelatih %}
+                            <div class="d-flex align-items-center mt-2">
+                                {% if eskul.pelatih.foto_profil %}
+                                    <img src="{{ eskul.pelatih.foto_profil.url }}" alt="Foto" class="img-thumbnail me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-secondary rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <strong>{{ eskul.pelatih.nama_lengkap }}</strong><br>
+                                    <small class="text-muted">{{ eskul.pelatih.email }}</small>
+                                </div>
+                            </div>
+                        {% else %}
+                            <em>Belum ada pelatih yang ditugaskan</em>
+                        {% endif %}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="pelatih_id">Pilih Pelatih Baru:</label>
+                            <select name="pelatih_id" id="pelatih_id" class="form-control" required>
+                                <option value="">-- Pilih Pelatih --</option>
+                                {% for pelatih in available_pelatih %}
+                                    <option value="{{ pelatih.id }}" {% if pelatih.id == eskul.pelatih.id %}selected{% endif %}>
+                                        {{ pelatih.nama_lengkap }} ({{ pelatih.username }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        {% if available_pelatih %}
+                            <!-- Preview Pelatih -->
+                            <div id="pelatih-preview" class="card bg-light mb-3" style="display: none;">
+                                <div class="card-body">
+                                    <h6 class="card-title">Preview Pelatih Terpilih</h6>
+                                    <div id="preview-content"></div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Tugaskan Pelatih</button>
+                            <a href="{% url 'manage_eskul' %}" class="btn btn-secondary">Batal</a>
+                        </div>
+                    </form>
+
+                    {% if not available_pelatih %}
+                        <div class="alert alert-warning mt-3">
+                            <strong>Peringatan:</strong> Tidak ada pelatih yang tersedia. 
+                            <a href="{% url 'create_user' %}" class="alert-link">Buat akun pelatih baru</a> terlebih dahulu.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pelatihSelect = document.getElementById('pelatih_id');
+    const preview = document.getElementById('pelatih-preview');
+    const previewContent = document.getElementById('preview-content');
+    
+    // Pelatih data untuk preview
+    const pelatihData = {
+        {% for pelatih in available_pelatih %}
+        {{ pelatih.id }}: {
+            nama: '{{ pelatih.nama_lengkap }}',
+            username: '{{ pelatih.username }}',
+            email: '{{ pelatih.email }}',
+            no_telepon: '{{ pelatih.no_telepon|default:"Tidak ada" }}',
+            foto: {% if pelatih.foto_profil %}'{{ pelatih.foto_profil.url }}'{% else %}null{% endif %}
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+    
+    pelatihSelect.addEventListener('change', function() {
+        const selectedId = this.value;
+        
+        if (selectedId && pelatihData[selectedId]) {
+            const pelatih = pelatihData[selectedId];
+            let fotoHtml = '';
+            
+            if (pelatih.foto) {
+                fotoHtml = `<img src="${pelatih.foto}" alt="Foto" class="img-thumbnail me-3" style="width: 50px; height: 50px; object-fit: cover;">`;
+            } else {
+                fotoHtml = `<div class="bg-secondary rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="fas fa-user text-white"></i>
+                </div>`;
+            }
+            
+            previewContent.innerHTML = `
+                <div class="d-flex align-items-center">
+                    ${fotoHtml}
+                    <div>
+                        <strong>${pelatih.nama}</strong><br>
+                        <small class="text-muted">Username: ${pelatih.username}</small><br>
+                        <small class="text-muted">Email: ${pelatih.email}</small><br>
+                        <small class="text-muted">Telepon: ${pelatih.no_telepon}</small>
+                    </div>
+                </div>
+            `;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

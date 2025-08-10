@@ -4,7 +4,7 @@ from django.conf import settings
 class Eskul(models.Model):
     nama_eskul = models.CharField(max_length=100)
     deskripsi = models.TextField()
-    pelatih = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, limit_choices_to={'role': 'pelatih'})
+    pelatih = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, limit_choices_to={'role': 'pelatih'}, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
