@@ -83,27 +83,35 @@
 
             <!-- Photo Upload Card -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <i class="bi bi-camera me-2"></i>Dokumentasi Kegiatan
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-camera me-2"></i>Dokumentasi Kegiatan</span>
+                    <span class="badge bg-primary" id="photoCount">0 Foto</span>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label for="foto_kegiatan" class="form-label">
-                            <i class="bi bi-images me-1"></i>Upload Foto Kegiatan
-                        </label>
-                        <input type="file" class="form-control" id="foto_kegiatan" 
-                               name="foto_kegiatan" multiple accept="image/*" capture="camera">
-                        <div class="form-text">
-                            Bisa upload beberapa foto sekaligus. Klik "capture" untuk langsung foto dari kamera.
+                        <button type="button" class="btn btn-primary btn-lg w-100 mb-2" onclick="triggerFileInput()">
+                            <i class="bi bi-camera me-2"></i>Ambil/Upload Foto
+                        </button>
+                        <input type="file" class="d-none" id="foto_kegiatan" 
+                               accept="image/*" capture="camera">
+                        <div class="form-text text-center">
+                            Klik tombol untuk foto dari kamera atau pilih dari galeri. Bisa dilakukan berulang kali.
                         </div>
                     </div>
                     
-                    <!-- Photo Preview -->
-                    <div id="photoPreview" class="row g-2 mt-2" style="display: none;">
-                        <div class="col-12">
-                            <small class="text-muted">Preview Foto:</small>
+                    <!-- Photo Collection -->
+                    <div id="photoCollection" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">Foto yang akan diupload:</small>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearAllPhotos()">
+                                <i class="bi bi-trash me-1"></i>Hapus Semua
+                            </button>
                         </div>
+                        <div id="photoPreview" class="row g-2"></div>
                     </div>
+                    
+                    <!-- Hidden inputs for photos -->
+                    <div id="hiddenPhotoInputs"></div>
                 </div>
             </div>
         </div>
@@ -111,53 +119,94 @@
         <!-- Right Column - Attendance -->
         <div class="col-lg-6">
             <div class="card">
-                <div class="card-header">
-                    <i class="bi bi-person-check me-2"></i>Absensi Siswa ({{ siswa_list|length }})
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-person-check me-2"></i>Absensi Siswa</span>
+                    <span class="badge bg-secondary">{{ siswa_list|length }} siswa</span>
                 </div>
                 <div class="card-body">
                     {% if siswa_list %}
                         <div class="mb-3">
-                            <div class="btn-group w-100" role="group">
-                                <button type="button" class="btn btn-success" onclick="setAllAttendance('hadir')">
-                                    <i class="bi bi-check-all me-1"></i>Semua Hadir
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="resetAttendance()">
-                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
-                                </button>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-success w-100" onclick="setAllAttendance('hadir')">
+                                        <i class="bi bi-check-all me-1"></i>Semua Hadir
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-secondary w-100" onclick="resetAttendance()">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nama Siswa</th>
-                                        <th>Kelas</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for siswa in siswa_list %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ siswa.nama_siswa }}</strong>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">{{ siswa.kelas }}</span>
-                                        </td>
-                                        <td>
-                                            <select class="form-select form-select-sm attendance-select" 
-                                                    name="absensi_{{ siswa.id }}" onchange="updateAttendanceColor(this)">
-                                                <option value="alpha">❌ Alpha</option>
-                                                <option value="hadir">✅ Hadir</option>
-                                                <option value="sakit">🏥 Sakit</option>
-                                                <option value="izin">📝 Izin</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <!-- Mobile-First Attendance Cards -->
+                        <div class="d-block d-lg-none">
+                            <!-- Mobile View: Card Layout -->
+                            <div id="mobileAttendance">
+                                {% for siswa in siswa_list %}
+                                <div class="card mb-2 attendance-card" data-student-id="{{ siswa.id }}">
+                                    <div class="card-body p-2">
+                                        <div class="row align-items-center">
+                                            <div class="col-7">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="attendance-status-indicator me-2" id="indicator_{{ siswa.id }}">❌</div>
+                                                    <div>
+                                                        <div class="fw-bold small">{{ siswa.nama_siswa }}</div>
+                                                        <span class="badge bg-info small">{{ siswa.kelas }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <select class="form-select form-select-sm attendance-select" 
+                                                        name="absensi_{{ siswa.id }}" onchange="updateMobileAttendance(this, {{ siswa.id }})">
+                                                    <option value="alpha">Alpha</option>
+                                                    <option value="hadir">Hadir</option>
+                                                    <option value="sakit">Sakit</option>
+                                                    <option value="izin">Izin</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Desktop View: Table Layout -->
+                        <div class="d-none d-lg-block">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nama Siswa</th>
+                                            <th>Kelas</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for siswa in siswa_list %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ siswa.nama_siswa }}</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ siswa.kelas }}</span>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm attendance-select" 
+                                                        name="absensi_{{ siswa.id }}" onchange="updateAttendanceColor(this)">
+                                                    <option value="alpha">❌ Alpha</option>
+                                                    <option value="hadir">✅ Hadir</option>
+                                                    <option value="sakit">🏥 Sakit</option>
+                                                    <option value="izin">📝 Izin</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         
                         <!-- Attendance Summary -->
@@ -226,42 +275,129 @@
 </form>
 
 <script>
-// Photo preview functionality
+// Photo upload system - multiple photos one by one
+let photoCollection = [];
+let photoCounter = 0;
+
+function triggerFileInput() {
+    document.getElementById('foto_kegiatan').click();
+}
+
 document.getElementById('foto_kegiatan').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);
-    const preview = document.getElementById('photoPreview');
-    preview.innerHTML = '<div class="col-12"><small class="text-muted">Preview Foto:</small></div>';
-    
-    if (files.length > 0) {
-        files.forEach((file, index) => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const div = document.createElement('div');
-                    div.className = 'col-4 col-md-3';
-                    div.innerHTML = `
-                        <div class="position-relative">
-                            <img src="${e.target.result}" class="img-fluid rounded shadow-sm" 
-                                 style="height: 80px; object-fit: cover; width: 100%;">
-                            <span class="position-absolute top-0 start-0 badge bg-primary">${index + 1}</span>
-                        </div>
-                    `;
-                    preview.appendChild(div);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        preview.style.display = 'block';
-    } else {
-        preview.style.display = 'none';
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        addPhotoToCollection(file);
     }
+    // Reset input for next photo
+    e.target.value = '';
 });
+
+function addPhotoToCollection(file) {
+    photoCounter++;
+    const photoId = 'photo_' + photoCounter;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // Add to collection
+        photoCollection.push({
+            id: photoId,
+            file: file,
+            dataUrl: e.target.result
+        });
+        
+        // Create preview
+        const preview = document.getElementById('photoPreview');
+        const div = document.createElement('div');
+        div.className = 'col-6 col-md-4';
+        div.id = 'preview_' + photoId;
+        div.innerHTML = `
+            <div class="position-relative">
+                <img src="${e.target.result}" class="img-fluid rounded shadow-sm" 
+                     style="height: 100px; object-fit: cover; width: 100%;">
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" 
+                        onclick="removePhoto('${photoId}')" style="transform: translate(25%, -25%);">
+                    <i class="bi bi-x"></i>
+                </button>
+                <span class="position-absolute bottom-0 start-0 badge bg-primary m-1">${photoCollection.length}</span>
+            </div>
+        `;
+        preview.appendChild(div);
+        
+        // Create hidden input for form submission
+        const hiddenInputs = document.getElementById('hiddenPhotoInputs');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'foto_kegiatan';
+        input.style.display = 'none';
+        input.id = 'input_' + photoId;
+        
+        // Create a new FileList with our file
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        
+        hiddenInputs.appendChild(input);
+        
+        // Show collection and update count
+        document.getElementById('photoCollection').style.display = 'block';
+        updatePhotoCount();
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePhoto(photoId) {
+    // Remove from collection
+    photoCollection = photoCollection.filter(photo => photo.id !== photoId);
+    
+    // Remove preview
+    document.getElementById('preview_' + photoId).remove();
+    
+    // Remove hidden input
+    document.getElementById('input_' + photoId).remove();
+    
+    // Update photo numbers
+    updatePhotoNumbers();
+    
+    // Hide collection if empty
+    if (photoCollection.length === 0) {
+        document.getElementById('photoCollection').style.display = 'none';
+    }
+    
+    updatePhotoCount();
+}
+
+function clearAllPhotos() {
+    photoCollection = [];
+    document.getElementById('photoPreview').innerHTML = '';
+    document.getElementById('hiddenPhotoInputs').innerHTML = '';
+    document.getElementById('photoCollection').style.display = 'none';
+    updatePhotoCount();
+}
+
+function updatePhotoNumbers() {
+    photoCollection.forEach((photo, index) => {
+        const preview = document.getElementById('preview_' + photo.id);
+        if (preview) {
+            const badge = preview.querySelector('.badge');
+            if (badge) badge.textContent = index + 1;
+        }
+    });
+}
+
+function updatePhotoCount() {
+    const count = photoCollection.length;
+    document.getElementById('photoCount').textContent = count + (count === 1 ? ' Foto' : ' Foto');
+}
 
 // Attendance functions
 function setAllAttendance(status) {
     document.querySelectorAll('.attendance-select').forEach(select => {
         select.value = status;
         updateAttendanceColor(select);
+        
+        // Update mobile indicators if exists
+        const studentId = select.name.replace('absensi_', '');
+        updateMobileIndicator(studentId, status);
     });
     updateAttendanceCount();
 }
@@ -270,6 +406,10 @@ function resetAttendance() {
     document.querySelectorAll('.attendance-select').forEach(select => {
         select.value = 'alpha';
         updateAttendanceColor(select);
+        
+        // Update mobile indicators if exists  
+        const studentId = select.name.replace('absensi_', '');
+        updateMobileIndicator(studentId, 'alpha');
     });
     updateAttendanceCount();
 }
@@ -291,6 +431,44 @@ function updateAttendanceColor(select) {
             break;
     }
     updateAttendanceCount();
+}
+
+// Mobile attendance functions
+function updateMobileAttendance(select, studentId) {
+    updateAttendanceColor(select);
+    updateMobileIndicator(studentId, select.value);
+}
+
+function updateMobileIndicator(studentId, status) {
+    const indicator = document.getElementById('indicator_' + studentId);
+    if (indicator) {
+        const statusMap = {
+            'hadir': '✅',
+            'sakit': '🏥', 
+            'izin': '📝',
+            'alpha': '❌'
+        };
+        indicator.textContent = statusMap[status] || '❌';
+        
+        // Update card border color
+        const card = indicator.closest('.attendance-card');
+        if (card) {
+            card.className = 'card mb-2 attendance-card';
+            switch(status) {
+                case 'hadir':
+                    card.classList.add('border-success');
+                    break;
+                case 'sakit':
+                    card.classList.add('border-warning');
+                    break;
+                case 'izin':
+                    card.classList.add('border-info');
+                    break;
+                default:
+                    card.classList.add('border-danger');
+            }
+        }
+    }
 }
 
 function updateAttendanceCount() {
