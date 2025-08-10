@@ -173,8 +173,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-5">
-                                                <select class="form-select form-select-sm attendance-select" 
-                                                        name="absensi_{{ siswa.id }}" onchange="updateMobileAttendance(this, {{ siswa.id }})">
+                                                <select class="form-select form-select-sm attendance-select attendance-mobile" 
+                                                        name="absensi_{{ siswa.id }}" id="mobile_absensi_{{ siswa.id }}" 
+                                                        onchange="updateMobileAttendance(this, {{ siswa.id }})">
                                                     <option value="alpha">Alpha</option>
                                                     <option value="hadir">Hadir</option>
                                                     <option value="sakit">Sakit</option>
@@ -209,8 +210,9 @@
                                                 <span class="badge bg-info">{{ siswa.kelas }}</span>
                                             </td>
                                             <td>
-                                                <select class="form-select form-select-sm attendance-select" 
-                                                        name="absensi_{{ siswa.id }}" onchange="updateAttendanceColor(this)">
+                                                <select class="form-select form-select-sm attendance-select attendance-desktop" 
+                                                        name="absensi_{{ siswa.id }}" id="desktop_absensi_{{ siswa.id }}" 
+                                                        onchange="updateDesktopAttendance(this, {{ siswa.id }})">
                                                     <option value="alpha">❌ Alpha</option>
                                                     <option value="hadir">✅ Hadir</option>
                                                     <option value="sakit">🏥 Sakit</option>
@@ -551,31 +553,36 @@ function updatePhotoCount() {
 
 // Attendance functions
 function setAllAttendance(status) {
-    document.querySelectorAll('.attendance-select').forEach(select => {
+    // Set mobile selects (primary) and sync to desktop
+    document.querySelectorAll('.attendance-mobile').forEach(select => {
         select.value = status;
-        updateAttendanceColor(select);
-        
-        // Update mobile indicators if exists
         const studentId = select.name.replace('absensi_', '');
+        
+        // Update mobile
+        updateAttendanceColor(select);
         updateMobileIndicator(studentId, status);
+        
+        // Sync with desktop
+        const desktopSelect = document.getElementById('desktop_absensi_' + studentId);
+        if (desktopSelect) {
+            desktopSelect.value = status;
+            updateAttendanceColor(desktopSelect);
+        }
     });
     updateAttendanceCount();
 }
 
 function resetAttendance() {
-    document.querySelectorAll('.attendance-select').forEach(select => {
-        select.value = 'alpha';
-        updateAttendanceColor(select);
-        
-        // Update mobile indicators if exists  
-        const studentId = select.name.replace('absensi_', '');
-        updateMobileIndicator(studentId, 'alpha');
-    });
-    updateAttendanceCount();
+    setAllAttendance('alpha');
 }
 
 function updateAttendanceColor(select) {
-    select.className = 'form-select form-select-sm attendance-select';
+    // Preserve original classes
+    const originalClasses = select.classList.contains('attendance-mobile') ? 
+        'form-select form-select-sm attendance-select attendance-mobile' :
+        'form-select form-select-sm attendance-select attendance-desktop';
+    
+    select.className = originalClasses;
     switch(select.value) {
         case 'hadir':
             select.classList.add('text-success', 'fw-bold');
@@ -597,6 +604,25 @@ function updateAttendanceColor(select) {
 function updateMobileAttendance(select, studentId) {
     updateAttendanceColor(select);
     updateMobileIndicator(studentId, select.value);
+    
+    // Sync with desktop select
+    const desktopSelect = document.getElementById('desktop_absensi_' + studentId);
+    if (desktopSelect) {
+        desktopSelect.value = select.value;
+        updateAttendanceColor(desktopSelect);
+    }
+}
+
+// Desktop attendance functions
+function updateDesktopAttendance(select, studentId) {
+    updateAttendanceColor(select);
+    
+    // Sync with mobile select
+    const mobileSelect = document.getElementById('mobile_absensi_' + studentId);
+    if (mobileSelect) {
+        mobileSelect.value = select.value;
+        updateMobileIndicator(studentId, select.value);
+    }
 }
 
 function updateMobileIndicator(studentId, status) {
@@ -634,7 +660,9 @@ function updateMobileIndicator(studentId, status) {
 function updateAttendanceCount() {
     const counts = { hadir: 0, sakit: 0, izin: 0, alpha: 0 };
     
-    document.querySelectorAll('.attendance-select').forEach(select => {
+    // Count from mobile selects only (they are the primary source)
+    // Desktop selects are synced to mobile values
+    document.querySelectorAll('.attendance-mobile').forEach(select => {
         counts[select.value]++;
     });
     
@@ -646,12 +674,22 @@ function updateAttendanceCount() {
 
 // Initialize attendance count
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize attendance count - should show correct initial values
     updateAttendanceCount();
     
-    // Add event listeners to all attendance selects
-    document.querySelectorAll('.attendance-select').forEach(select => {
+    // Add event listeners to mobile selects
+    document.querySelectorAll('.attendance-mobile').forEach(select => {
         select.addEventListener('change', function() {
-            updateAttendanceColor(this);
+            const studentId = this.name.replace('absensi_', '');
+            updateMobileAttendance(this, studentId);
+        });
+    });
+    
+    // Add event listeners to desktop selects
+    document.querySelectorAll('.attendance-desktop').forEach(select => {
+        select.addEventListener('change', function() {
+            const studentId = this.name.replace('absensi_', '');
+            updateDesktopAttendance(this, studentId);
         });
     });
 });
