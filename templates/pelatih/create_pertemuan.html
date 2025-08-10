@@ -85,7 +85,7 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span><i class="bi bi-camera me-2"></i>Dokumentasi Kegiatan</span>
-                    <span class="badge bg-primary" id="photoCount">0 Foto</span>
+                    <span class="badge bg-primary" id="photoCount">0/5 Foto</span>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -95,7 +95,22 @@
                         <input type="file" class="d-none" id="foto_kegiatan" 
                                accept="image/*" capture="camera">
                         <div class="form-text text-center">
-                            Klik tombol untuk foto dari kamera atau pilih dari galeri. Bisa dilakukan berulang kali.
+                            <strong class="text-danger">Wajib upload minimal 1 foto, maksimal 5 foto</strong>
+                            <br>Klik tombol untuk foto dari kamera atau pilih dari galeri.
+                            <br><small class="text-success">✓ Foto otomatis dikompres untuk menghemat data</small>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mt-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small class="text-muted">Progress Upload</small>
+                                <small class="text-muted" id="photoProgress">0/5</small>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" id="photoProgressBar" role="progressbar" 
+                                     style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -286,13 +301,99 @@ function triggerFileInput() {
 document.getElementById('foto_kegiatan').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
-        addPhotoToCollection(file);
+        // Check file size before processing (max 15MB original)
+        const maxSize = 15 * 1024 * 1024; // 15MB
+        if (file.size > maxSize) {
+            alert('Ukuran foto terlalu besar! Maksimal 15MB per foto.\n\nUkuran foto Anda: ' + 
+                  (file.size / 1024 / 1024).toFixed(1) + 'MB');
+            return;
+        }
+        
+        // Check total photos limit
+        if (photoCollection.length >= 5) {
+            alert('Maksimal 5 foto per pertemuan!');
+            return;
+        }
+        
+        // Show loading indicator
+        showPhotoLoading(true);
+        
+        // Compress image before adding to collection
+        compressImage(file, function(compressedFile) {
+            addPhotoToCollection(compressedFile, file.size);
+            showPhotoLoading(false);
+        }, function(error) {
+            // Error callback
+            showPhotoLoading(false);
+            alert('Gagal memproses foto: ' + error);
+        });
+    } else if (file) {
+        alert('File harus berupa gambar (JPG, PNG, etc.)');
     }
     // Reset input for next photo
     e.target.value = '';
 });
 
-function addPhotoToCollection(file) {
+// Image compression function
+function compressImage(file, successCallback, errorCallback, quality = 0.8, maxWidth = 1200) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = function() {
+        try {
+            // Calculate new dimensions
+            let { width, height } = img;
+            
+            if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+            }
+            
+            // Set canvas dimensions
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Draw and compress
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            canvas.toBlob(function(blob) {
+                if (blob) {
+                    // Create new file with compressed blob
+                    const compressedFile = new File([blob], file.name, {
+                        type: file.type,
+                        lastModified: Date.now()
+                    });
+                    
+                    successCallback(compressedFile);
+                } else {
+                    errorCallback('Gagal mengompres gambar');
+                }
+            }, file.type, quality);
+        } catch (error) {
+            errorCallback('Error saat memproses gambar: ' + error.message);
+        }
+    };
+    
+    img.onerror = function() {
+        errorCallback('Gagal memuat gambar');
+    };
+    
+    img.src = URL.createObjectURL(file);
+}
+
+function showPhotoLoading(show) {
+    const button = document.querySelector('button[onclick="triggerFileInput()"]');
+    if (show) {
+        button.disabled = true;
+        button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Memproses foto...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = '<i class="bi bi-camera me-2"></i>Ambil/Upload Foto';
+    }
+}
+
+function addPhotoToCollection(file, originalSize = null) {
     photoCounter++;
     const photoId = 'photo_' + photoCounter;
     
@@ -302,8 +403,14 @@ function addPhotoToCollection(file) {
         photoCollection.push({
             id: photoId,
             file: file,
-            dataUrl: e.target.result
+            dataUrl: e.target.result,
+            originalSize: originalSize
         });
+        
+        // Format file sizes
+        const compressedSize = (file.size / 1024).toFixed(1) + ' KB';
+        const originalSizeText = originalSize ? 
+            ` (asli: ${(originalSize / 1024 / 1024).toFixed(1)} MB)` : '';
         
         // Create preview
         const preview = document.getElementById('photoPreview');
@@ -319,7 +426,11 @@ function addPhotoToCollection(file) {
                     <i class="bi bi-x"></i>
                 </button>
                 <span class="position-absolute bottom-0 start-0 badge bg-primary m-1">${photoCollection.length}</span>
+                ${originalSize ? `<div class="position-absolute bottom-0 end-0 m-1">
+                    <small class="badge bg-success">${compressedSize}</small>
+                </div>` : ''}
             </div>
+            ${originalSize ? `<small class="text-muted d-block text-center mt-1">Dikompres: ${compressedSize}${originalSizeText}</small>` : ''}
         `;
         preview.appendChild(div);
         
@@ -386,7 +497,56 @@ function updatePhotoNumbers() {
 
 function updatePhotoCount() {
     const count = photoCollection.length;
-    document.getElementById('photoCount').textContent = count + (count === 1 ? ' Foto' : ' Foto');
+    const totalSize = photoCollection.reduce((sum, photo) => sum + photo.file.size, 0);
+    const totalSizeKB = (totalSize / 1024).toFixed(1);
+    
+    const photoCountBadge = document.getElementById('photoCount');
+    const uploadButton = document.querySelector('button[onclick="triggerFileInput()"]');
+    
+    // Update count display
+    photoCountBadge.textContent = `${count}/5 Foto` + (count > 0 ? ` (${totalSizeKB} KB)` : '');
+    
+    // Update badge color based on count
+    photoCountBadge.className = 'badge ';
+    if (count === 0) {
+        photoCountBadge.classList.add('bg-secondary');
+    } else if (count < 5) {
+        photoCountBadge.classList.add('bg-primary');
+    } else {
+        photoCountBadge.classList.add('bg-success');
+    }
+    
+    // Update progress bar
+    const progressPercentage = (count / 5) * 100;
+    const progressBar = document.getElementById('photoProgressBar');
+    const progressText = document.getElementById('photoProgress');
+    
+    progressBar.style.width = progressPercentage + '%';
+    progressBar.setAttribute('aria-valuenow', count);
+    progressText.textContent = `${count}/5`;
+    
+    // Update progress bar color
+    progressBar.className = 'progress-bar ';
+    if (count === 0) {
+        progressBar.classList.add('bg-secondary');
+    } else if (count < 5) {
+        progressBar.classList.add('bg-primary');
+    } else {
+        progressBar.classList.add('bg-success');
+    }
+    
+    // Disable/enable upload button when limit reached
+    if (count >= 5) {
+        uploadButton.disabled = true;
+        uploadButton.innerHTML = '<i class="bi bi-check-circle me-2"></i>Maksimal 5 Foto Tercapai';
+        uploadButton.classList.remove('btn-primary');
+        uploadButton.classList.add('btn-success');
+    } else {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = '<i class="bi bi-camera me-2"></i>Ambil/Upload Foto';
+        uploadButton.classList.remove('btn-success');
+        uploadButton.classList.add('btn-primary');
+    }
 }
 
 // Attendance functions
@@ -502,12 +662,23 @@ function confirmSubmit() {
     const materi = document.getElementById('materi_kegiatan').value;
     const hadirCount = document.getElementById('hadirCount').textContent;
     const totalSiswa = {{ siswa_list|length }};
+    const photoCount = photoCollection.length;
     
+    // Validation
     if (!tanggal || !materi.trim()) {
         Swal.fire({
             icon: 'error',
             title: 'Form Belum Lengkap',
             text: 'Tanggal dan materi kegiatan harus diisi!'
+        });
+        return;
+    }
+    
+    if (photoCount === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Foto Dokumentasi Wajib',
+            text: 'Minimal 1 foto harus diupload untuk dokumentasi kegiatan!'
         });
         return;
     }
@@ -518,6 +689,7 @@ function confirmSubmit() {
             <div class="text-start">
                 <p><strong>Tanggal:</strong> ${tanggal}</p>
                 <p><strong>Kehadiran:</strong> ${hadirCount}/${totalSiswa} siswa</p>
+                <p><strong>Foto:</strong> ${photoCount} foto dokumentasi</p>
                 <hr>
                 <p class="text-warning"><i class="bi bi-exclamation-triangle me-2"></i><strong>Perhatian:</strong> Data tidak dapat diubah setelah disimpan!</p>
             </div>
