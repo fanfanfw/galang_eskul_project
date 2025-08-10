@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Import Siswa - Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-success">
+                <i class="bi bi-file-earmark-arrow-up me-2"></i>Import Siswa
+            </h2>
+            <a href="{% url 'admin_manage_students' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Kembali
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Instructions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5 class="alert-heading">
+                <i class="bi bi-info-circle me-2"></i>Petunjuk Import Siswa
+            </h5>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Format File yang Didukung:</h6>
+                    <ul>
+                        <li>Excel (.xlsx, .xls)</li>
+                        <li>CSV (.csv)</li>
+                    </ul>
+                    
+                    <h6>Format Kolom:</h6>
+                    <ul>
+                        <li><strong>nama_siswa</strong> atau <strong>nama</strong></li>
+                        <li><strong>kelas</strong> (format: 1A-6E, contoh: 1A, 3C, 6E)</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Contoh Data:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>nama_siswa</th>
+                                    <th>kelas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ABDUL HARIS</td>
+                                    <td>6A</td>
+                                </tr>
+                                <tr>
+                                    <td>SITI NURHALIZA</td>
+                                    <td>6A</td>
+                                </tr>
+                                <tr>
+                                    <td>BUDI SANTOSO</td>
+                                    <td>5B</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0">
+                <strong>Catatan:</strong> Sistem akan memeriksa siswa yang sudah ada dan menampilkan preview sebelum menyimpan data.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Import Form -->
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-upload me-2"></i>Upload File Siswa
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="importForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="eskul_id" class="form-label">
+                            <i class="bi bi-collection me-1"></i>Pilih Eskul <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select form-select-lg" id="eskul_id" name="eskul_id" required>
+                            <option value="">-- Pilih Eskul --</option>
+                            {% for eskul in eskul_list %}
+                            <option value="{{ eskul.id }}">
+                                {{ eskul.nama_eskul }} - {{ eskul.pelatih.nama_lengkap }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="file" class="form-label">
+                            <i class="bi bi-file-earmark me-1"></i>File Siswa <span class="text-danger">*</span>
+                        </label>
+                        <input type="file" class="form-control form-control-lg" id="file" name="file" 
+                               accept=".csv,.xlsx,.xls" required>
+                        <div class="form-text">
+                            Pilih file Excel (.xlsx, .xls) atau CSV (.csv). Maksimal 5MB.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="bi bi-upload me-2"></i>Upload dan Preview
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Download Template -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="bi bi-download me-2"></i>Butuh Template?
+                </h5>
+                <p class="card-text">
+                    Download template Excel untuk memudahkan proses import siswa.
+                </p>
+                <button class="btn btn-outline-success" onclick="downloadTemplate()">
+                    <i class="bi bi-file-earmark-excel me-2"></i>Download Template Excel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('importForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    submitBtn.disabled = true;
+    
+    // Re-enable button after 30 seconds if no response
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 30000);
+});
+
+function downloadTemplate() {
+    // Create a simple CSV template
+    const csvContent = "nama_siswa,kelas\nABDUL HARIS,6A\nSITI NURHALIZA,6A\nBUDI SANTOSO,5B";
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'template_siswa.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// File validation
+document.getElementById('file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const fileSize = file.size / 1024 / 1024; // Convert to MB
+        if (fileSize > 5) {
+            alert('Ukuran file terlalu besar. Maksimal 5MB.');
+            this.value = '';
+            return;
+        }
+        
+        const allowedExtensions = ['csv', 'xlsx', 'xls'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('Format file tidak didukung. Gunakan CSV atau Excel.');
+            this.value = '';
+            return;
+        }
+    }
+});
+</script>
+{% endblock %}

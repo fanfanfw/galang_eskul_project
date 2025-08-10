@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Sistem Eskul SD{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <i class="bi bi-mortarboard-fill fs-1 text-success mb-3"></i>
+                <h4 class="mb-0">Masuk ke Sistem Eskul</h4>
+                <p class="text-muted mb-0">Sekolah Dasar</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="bi bi-person me-1"></i>Username
+                        </label>
+                        <input type="text" class="form-control form-control-lg" 
+                               id="username" name="username" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-lock me-1"></i>Password
+                        </label>
+                        <input type="password" class="form-control form-control-lg" 
+                               id="password" name="password" required>
+                    </div>
+                    
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
+                        </button>
+                    </div>
+                </form>
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Username atau password salah. Silakan coba lagi.
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-footer text-center text-muted">
+                <small>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Sistem aman untuk pengelolaan eskul
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="text-center">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">
+                                <i class="bi bi-info-circle me-2"></i>Informasi Sistem
+                            </h5>
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <i class="bi bi-people-fill fs-2 text-primary mb-2"></i>
+                                    <p><strong>Untuk Pelatih</strong><br>
+                                    <small>Catat kegiatan dan absensi siswa dengan mudah</small></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="bi bi-bar-chart-fill fs-2 text-success mb-2"></i>
+                                    <p><strong>Untuk Admin</strong><br>
+                                    <small>Pantau semua kegiatan eskul dan buat laporan</small></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="bi bi-phone fs-2 text-warning mb-2"></i>
+                                    <p><strong>Mobile Friendly</strong><br>
+                                    <small>Dapat diakses dari HP dengan mudah</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

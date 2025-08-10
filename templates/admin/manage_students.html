@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Kelola Siswa - Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-success">
+                <i class="bi bi-people-fill me-2"></i>Kelola Siswa
+            </h2>
+            <div>
+                <a href="{% url 'admin_import_students' %}" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-arrow-up me-2"></i>Import Siswa
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Kembali
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ siswa_list|length }}</h4>
+                        <p class="mb-0">Total Siswa</p>
+                    </div>
+                    <i class="bi bi-people fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ eskul_list|length }}</h4>
+                        <p class="mb-0">Total Eskul</p>
+                    </div>
+                    <i class="bi bi-collection fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ total_kelas }}</h4>
+                        <p class="mb-0">Total Kelas</p>
+                    </div>
+                    <i class="bi bi-building fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ siswa_aktif }}</h4>
+                        <p class="mb-0">Siswa Aktif</p>
+                    </div>
+                    <i class="bi bi-person-check fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter and Search -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="filterEskul" class="form-label">Filter Eskul:</label>
+                        <select class="form-select" id="filterEskul">
+                            <option value="">Semua Eskul</option>
+                            {% for eskul in eskul_list %}
+                            <option value="{{ eskul.id }}">{{ eskul.nama_eskul }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filterKelas" class="form-label">Filter Kelas:</label>
+                        <select class="form-select" id="filterKelas">
+                            <option value="">Semua Kelas</option>
+                            {% for kelas in kelas_list %}
+                            <option value="{{ kelas }}">{{ kelas }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="searchNama" class="form-label">Cari Nama:</label>
+                        <input type="text" class="form-control" id="searchNama" placeholder="Masukkan nama siswa...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-table me-2"></i>Daftar Siswa
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0" id="studentsTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Siswa</th>
+                                <th>Kelas</th>
+                                <th>Eskul</th>
+                                <th>Pelatih</th>
+                                <th>Status</th>
+                                <th>Tgl Daftar</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for siswa in siswa_list %}
+                            <tr data-eskul="{{ siswa.eskul.id }}" data-kelas="{{ siswa.kelas }}" data-nama="{{ siswa.nama_siswa|lower }}">
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <strong>{{ siswa.nama_siswa }}</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ siswa.kelas }}</span>
+                                </td>
+                                <td>{{ siswa.eskul.nama_eskul }}</td>
+                                <td>{{ siswa.eskul.pelatih.nama_lengkap }}</td>
+                                <td>
+                                    {% if siswa.is_active %}
+                                        <span class="badge bg-success">Aktif</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non-Aktif</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ siswa.created_at|date:"d/m/Y" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                onclick="confirmDelete({{ siswa.id }}, '{{ siswa.nama_siswa }}', '{{ siswa.kelas }}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                                    <p class="text-muted">Belum ada siswa yang terdaftar.</p>
+                                    <a href="{% url 'admin_import_students' %}" class="btn btn-primary">
+                                        <i class="bi bi-file-earmark-arrow-up me-2"></i>Import Siswa Sekarang
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">Yakin ingin menghapus siswa?</h5>
+                    <p id="deleteStudentInfo" class="text-muted"></p>
+                    <p class="text-danger">
+                        <small><strong>Perhatian:</strong> Data absensi siswa ini juga akan ikut terhapus!</small>
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">
+                    <i class="bi bi-trash me-2"></i>Ya, Hapus
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter and Search Functions
+document.addEventListener('DOMContentLoaded', function() {
+    const filterEskul = document.getElementById('filterEskul');
+    const filterKelas = document.getElementById('filterKelas');
+    const searchNama = document.getElementById('searchNama');
+    const table = document.getElementById('studentsTable');
+    const rows = table.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const eskulFilter = filterEskul.value;
+        const kelasFilter = filterKelas.value;
+        const namaFilter = searchNama.value.toLowerCase();
+
+        rows.forEach(row => {
+            if (row.children.length === 1) return; // Skip empty row
+            
+            const eskulMatch = !eskulFilter || row.dataset.eskul === eskulFilter;
+            const kelasMatch = !kelasFilter || row.dataset.kelas === kelasFilter;
+            const namaMatch = !namaFilter || row.dataset.nama.includes(namaFilter);
+
+            if (eskulMatch && kelasMatch && namaMatch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    filterEskul.addEventListener('change', filterTable);
+    filterKelas.addEventListener('change', filterTable);
+    searchNama.addEventListener('input', filterTable);
+});
+
+// Delete Functions
+function confirmDelete(studentId, studentName, studentClass) {
+    document.getElementById('deleteStudentInfo').textContent = `${studentName} (${studentClass})`;
+    document.getElementById('confirmDeleteBtn').href = `/dashboard/admin/students/delete/${studentId}/`;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}
