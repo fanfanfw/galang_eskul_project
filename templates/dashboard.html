@@ -95,22 +95,29 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 mb-2">
-                        <a href="{% url 'admin_manage_students' %}" class="btn btn-primary w-100">
+                        <a href="{% url 'manage_users' %}" class="btn btn-primary w-100">
+                            <i class="bi bi-person-gear me-2"></i>Kelola Pelatih
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'admin_manage_students' %}" class="btn btn-success w-100">
                             <i class="bi bi-people me-2"></i>Kelola Siswa
                         </a>
                     </div>
                     <div class="col-md-3 mb-2">
-                        <a href="{% url 'admin_import_students' %}" class="btn btn-success w-100">
+                        <a href="{% url 'admin_import_students' %}" class="btn btn-info w-100">
                             <i class="bi bi-file-earmark-arrow-up me-2"></i>Import Siswa
                         </a>
                     </div>
                     <div class="col-md-3 mb-2">
-                        <a href="{% url 'admin_attendance_report' %}" class="btn btn-info w-100">
+                        <a href="{% url 'admin_attendance_report' %}" class="btn btn-warning w-100">
                             <i class="bi bi-person-check me-2"></i>Laporan Kehadiran
                         </a>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3 mb-2">
-                        <a href="#" class="btn btn-warning w-100">
+                        <a href="#" class="btn btn-secondary w-100">
                             <i class="bi bi-gear me-2"></i>Pengaturan
                         </a>
                     </div>

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Buat Akun Pelatih{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Buat Akun Pelatih Baru</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.username.id_for_label }}">Username</label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="text-danger">{{ form.username.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.email.id_for_label }}">Email</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.nama_lengkap.id_for_label }}">Nama Lengkap</label>
+                                    {{ form.nama_lengkap }}
+                                    {% if form.nama_lengkap.errors %}
+                                        <div class="text-danger">{{ form.nama_lengkap.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.no_telepon.id_for_label }}">No. Telepon</label>
+                                    {{ form.no_telepon }}
+                                    {% if form.no_telepon.errors %}
+                                        <div class="text-danger">{{ form.no_telepon.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.alamat.id_for_label }}">Alamat</label>
+                                    {{ form.alamat }}
+                                    {% if form.alamat.errors %}
+                                        <div class="text-danger">{{ form.alamat.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.foto_profil.id_for_label }}">Foto Profil</label>
+                                    {{ form.foto_profil }}
+                                    {% if form.foto_profil.errors %}
+                                        <div class="text-danger">{{ form.foto_profil.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                                    {{ form.password1 }}
+                                    {% if form.password1.errors %}
+                                        <div class="text-danger">{{ form.password1.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.password2.id_for_label }}">Konfirmasi Password</label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                        <div class="text-danger">{{ form.password2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Buat Akun</button>
+                            <a href="{% url 'manage_users' %}" class="btn btn-secondary">Batal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
