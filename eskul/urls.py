@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/students/', views.admin_manage_students_view, name='admin_manage_students'),
     path('admin/students/import/', views.admin_import_students_view, name='admin_import_students'),
     path('admin/students/delete/<int:student_id>/', views.admin_delete_student_view, name='admin_delete_student'),
+    path('admin/students/transfer/', views.admin_transfer_siswa_view, name='admin_transfer_siswa'),
+    path('admin/students/transfer/confirm/', views.admin_confirm_transfer_view, name='admin_confirm_transfer'),
     
     # Admin Reports
     path('admin/reports/attendance/', views.admin_attendance_report_view, name='admin_attendance_report'),

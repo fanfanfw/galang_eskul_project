@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  --primary-color: #2E7D32;
+  --secondary-color: #4CAF50;
+  --accent-color: #FFC107;
+  --light-green: #E8F5E8;
+}
+
+/* Custom components */
+@layer components {
+  .btn-primary-custom {
+    @apply bg-primary hover:bg-green-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors duration-200;
+  }
+
+  .card-custom {
+    @apply bg-white rounded-2xl shadow-lg border-0 overflow-hidden;
+  }
+
+  .card-header-custom {
+    @apply bg-light-green border-b-2 border-secondary font-bold text-primary p-4;
+  }
+
+  .navbar-custom {
+    @apply bg-white shadow-md;
+  }
+}

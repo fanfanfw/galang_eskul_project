@@ -37,10 +37,33 @@ class EskulForm(forms.ModelForm):
             'pelatih': forms.Select(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Filter pelatih yang tersedia (hanya yang role pelatih)
-        self.fields['pelatih'].queryset = CustomUser.objects.filter(role='pelatih', is_active=True)
+        available_pelatih = CustomUser.objects.filter(role='pelatih', is_active=True)
+
+        # Exclude pelatih yang sudah punya eskul (kecuali untuk instance saat ini)
+        if self.instance and self.instance.pk and self.instance.pelatih:
+            # Exclude pelatih yang sudah punya eskul, tapi allow current pelatih
+            available_pelatih = available_pelatih.exclude(
+                eskul__isnull=False
+            ).distinct() | CustomUser.objects.filter(id=self.instance.pelatih.id)
+        else:
+            # Exclude pelatih yang sudah punya eskul
+            available_pelatih = available_pelatih.exclude(
+                eskul__isnull=False
+            )
+
+        self.fields['pelatih'].queryset = available_pelatih.distinct()
         self.fields['pelatih'].empty_label = "Belum Ada Pelatih"
         self.fields['pelatih'].required = False
+
+    def clean_pelatih(self):
+        pelatih = self.cleaned_data.get('pelatih')
+        if pelatih:
+            # Check if pelatih already has an eskul
+            existing_eskul = Eskul.objects.filter(pelatih=pelatih).exclude(pk=self.instance.pk if self.instance and self.instance.pk else None)
+            if existing_eskul.exists():
+                raise forms.ValidationError(f"{pelatih.nama_lengkap} sudah menjadi pelatih untuk eskul {existing_eskul.first().nama_eskul}. Satu pelatih hanya bisa menangani satu eskul.")
+        return pelatih
