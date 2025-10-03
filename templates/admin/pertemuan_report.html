@@ -3,188 +3,165 @@
 {% block title %}Laporan Pertemuan - Admin{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-success">
-                <i class="bi bi-journal-text me-2"></i>Laporan Pertemuan
+<div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-green-700">
+                <i class="bi bi-journal-text mr-2"></i>Laporan Pertemuan
             </h2>
-            <div>
-                <a href="{% url 'export_pertemuan_excel' %}{% if filters.pelatih_id or filters.eskul_id or filters.start_date or filters.end_date %}?{% endif %}{% if filters.pelatih_id %}pelatih={{ filters.pelatih_id }}&{% endif %}{% if filters.eskul_id %}eskul={{ filters.eskul_id }}&{% endif %}{% if filters.start_date %}start_date={{ filters.start_date }}&{% endif %}{% if filters.end_date %}end_date={{ filters.end_date }}{% endif %}" 
-                   class="btn btn-success">
-                    <i class="bi bi-file-earmark-excel me-2"></i>Export Excel
+            <div class="flex space-x-3">
+                <a href="{% url 'export_pertemuan_excel' %}{% if filters.pelatih_id or filters.eskul_id or filters.start_date or filters.end_date %}?{% endif %}{% if filters.pelatih_id %}pelatih={{ filters.pelatih_id }}&{% endif %}{% if filters.eskul_id %}eskul={{ filters.eskul_id }}&{% endif %}{% if filters.start_date %}start_date={{ filters.start_date }}&{% endif %}{% if filters.end_date %}end_date={{ filters.end_date }}{% endif %}"
+                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center">
+                    <i class="bi bi-file-earmark-excel mr-2"></i>Export Excel
                 </a>
-                <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Kembali
+                <a href="{% url 'dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center">
+                    <i class="bi bi-arrow-left mr-2"></i>Kembali
                 </a>
             </div>
         </div>
     </div>
-</div>
 
 <!-- Filter Section -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <i class="bi bi-funnel me-2"></i>Filter Laporan
+<div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <h3 class="text-lg font-semibold mb-4">
+        <i class="bi bi-funnel mr-2"></i>Filter Laporan
+    </h3>
+    <form method="get" id="filterForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div>
+                <label for="pelatih" class="block text-sm font-medium text-gray-700 mb-1">Pelatih:</label>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" name="pelatih" id="pelatih">
+                    <option value="">Semua Pelatih</option>
+                    {% for pelatih in pelatih_list %}
+                    <option value="{{ pelatih.id }}"
+                        {% if filters.pelatih_id == pelatih.id|stringformat:"s" %}selected{% endif %}>
+                        {{ pelatih.nama_lengkap }}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="card-body">
-                <form method="get" id="filterForm">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="pelatih" class="form-label">Pelatih:</label>
-                            <select class="form-select" name="pelatih" id="pelatih">
-                                <option value="">Semua Pelatih</option>
-                                {% for pelatih in pelatih_list %}
-                                <option value="{{ pelatih.id }}" 
-                                    {% if filters.pelatih_id == pelatih.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ pelatih.nama_lengkap }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="eskul" class="form-label">Eskul:</label>
-                            <select class="form-select" name="eskul" id="eskul">
-                                <option value="">Semua Eskul</option>
-                                {% for eskul in eskul_list %}
-                                <option value="{{ eskul.id }}" 
-                                    {% if filters.eskul_id == eskul.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ eskul.nama_eskul }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="start_date" class="form-label">Dari Tanggal:</label>
-                            <input type="date" class="form-control" name="start_date" id="start_date" 
-                                   value="{{ filters.start_date }}">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="end_date" class="form-label">Sampai Tanggal:</label>
-                            <input type="date" class="form-control" name="end_date" id="end_date" 
-                                   value="{{ filters.end_date }}">
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-search me-1"></i>Filter
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div>
+                <label for="eskul" class="block text-sm font-medium text-gray-700 mb-1">Eskul:</label>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" name="eskul" id="eskul">
+                    <option value="">Semua Eskul</option>
+                    {% for eskul in eskul_list %}
+                    <option value="{{ eskul.id }}"
+                        {% if filters.eskul_id == eskul.id|stringformat:"s" %}selected{% endif %}>
+                        {{ eskul.nama_eskul }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal:</label>
+                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" name="start_date" id="start_date"
+                       value="{{ filters.start_date }}">
+            </div>
+            <div>
+                <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal:</label>
+                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" name="end_date" id="end_date"
+                       value="{{ filters.end_date }}">
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="bi bi-search mr-1"></i>Filter
+                </button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <!-- Summary Cards -->
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="mb-0">{{ pertemuan_data|length }}</h4>
-                        <p class="mb-0">Total Pertemuan</p>
-                    </div>
-                    <i class="bi bi-calendar-event fs-1"></i>
-                </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div class="bg-blue-600 text-white rounded-lg p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h4 class="text-3xl font-bold mb-1">{{ pertemuan_data|length }}</h4>
+                <p class="text-blue-100">Total Pertemuan</p>
             </div>
+            <i class="bi bi-calendar-event text-4xl text-blue-200"></i>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="mb-0">
-                            {{ total_foto_count|default:0 }}
-                        </h4>
-                        <p class="mb-0">Total Foto</p>
-                    </div>
-                    <i class="bi bi-camera fs-1"></i>
-                </div>
+    <div class="bg-green-600 text-white rounded-lg p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h4 class="text-3xl font-bold mb-1">
+                    {{ total_foto_count|default:0 }}
+                </h4>
+                <p class="text-green-100">Total Foto</p>
             </div>
+            <i class="bi bi-camera text-4xl text-green-200"></i>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="mb-0">
-                            {{ rata_rata_kehadiran|default:0|floatformat:1 }}%
-                        </h4>
-                        <p class="mb-0">Rata-rata Kehadiran</p>
-                    </div>
-                    <i class="bi bi-graph-up fs-1"></i>
-                </div>
+    <div class="bg-cyan-600 text-white rounded-lg p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h4 class="text-3xl font-bold mb-1">
+                    {{ rata_rata_kehadiran|default:0|floatformat:1 }}%
+                </h4>
+                <p class="text-cyan-100">Rata-rata Kehadiran</p>
             </div>
+            <i class="bi bi-graph-up text-4xl text-cyan-200"></i>
         </div>
     </div>
 </div>
 
 <!-- Pertemuan List -->
-<div class="row">
-    <div class="col-12">
+<div class="space-y-6">
         {% if pertemuan_data %}
             {% for data in pertemuan_data %}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h5 class="mb-0">
-                                <i class="bi bi-calendar-event me-2"></i>
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="mb-2 md:mb-0">
+                            <h5 class="text-lg font-semibold text-gray-900 mb-1">
+                                <i class="bi bi-calendar-event mr-2"></i>
                                 {{ data.pertemuan.tanggal|date:"l, d F Y" }}
                             </h5>
-                            <p class="text-muted mb-0">{{ data.pertemuan.eskul.nama_eskul }}</p>
+                            <p class="text-gray-600 text-sm">{{ data.pertemuan.eskul.nama_eskul }}</p>
                         </div>
-                        <div class="col-md-6 text-end">
-                            <span class="badge bg-primary me-1">
-                                <i class="bi bi-person me-1"></i>{{ data.pertemuan.pelatih.nama_lengkap }}
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="bi bi-person mr-1"></i>{{ data.pertemuan.pelatih.nama_lengkap }}
                             </span>
-                            <span class="badge bg-success me-1">
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                                 {{ data.stats.hadir }}/{{ data.stats.total }} Hadir ({{ data.persentase_hadir }}%)
                             </span>
                             {% if data.foto_count > 0 %}
-                            <span class="badge bg-info">
-                                <i class="bi bi-camera me-1"></i>{{ data.foto_count }} foto
+                            <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="bi bi-camera mr-1"></i>{{ data.foto_count }} foto
                             </span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="p-6">
                     <!-- Materi -->
-                    <div class="mb-3">
-                        <h6><i class="bi bi-journal-text me-2"></i>Materi Kegiatan:</h6>
-                        <p class="text-muted">{{ data.pertemuan.materi_kegiatan|truncatewords:30 }}</p>
+                    <div class="mb-4">
+                        <h6 class="font-semibold text-gray-900 mb-2">
+                            <i class="bi bi-journal-text mr-2"></i>Materi Kegiatan:
+                        </h6>
+                        <p class="text-gray-600">{{ data.pertemuan.materi_kegiatan|truncatewords:30 }}</p>
                     </div>
                     
                     <!-- Photos -->
                     {% if data.pertemuan.foto_list.all %}
-                    <div class="mb-3">
-                        <h6><i class="bi bi-camera me-2"></i>Dokumentasi Kegiatan:</h6>
-                        <div class="row g-2">
+                    <div class="mb-4">
+                        <h6 class="font-semibold text-gray-900 mb-2">
+                            <i class="bi bi-camera mr-2"></i>Dokumentasi Kegiatan:
+                        </h6>
+                        <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
                             {% for foto in data.pertemuan.foto_list.all|slice:":6" %}
-                            <div class="col-6 col-md-2">
-                                <div class="position-relative">
-                                    <img src="{{ foto.foto.url }}" class="img-fluid rounded shadow-sm" 
-                                         style="height: 100px; object-fit: cover; width: 100%; cursor: pointer;"
-                                         onclick="showImageModal('{{ foto.foto.url }}', '{{ data.pertemuan.eskul.nama_eskul }} - {{ data.pertemuan.tanggal }}')">
-                                    <span class="position-absolute bottom-0 end-0 badge bg-dark opacity-75">
-                                        {{ foto.uploaded_at|date:"H:i" }}
-                                    </span>
-                                </div>
+                            <div class="relative">
+                                <img src="{{ foto.foto.url }}" class="w-full h-24 object-cover rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                     onclick="showImageModal('{{ foto.foto.url }}', '{{ data.pertemuan.eskul.nama_eskul }} - {{ data.pertemuan.tanggal }}')">
+                                <span class="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
+                                    {{ foto.uploaded_at|date:"H:i" }}
+                                </span>
                             </div>
                             {% endfor %}
                             {% if data.pertemuan.foto_list.count > 6 %}
-                            <div class="col-6 col-md-2">
-                                <div class="d-flex align-items-center justify-content-center bg-light rounded" 
-                                     style="height: 100px;">
-                                    <span class="text-muted">+{{ data.pertemuan.foto_list.count|add:"-6" }} lainnya</span>
-                                </div>
+                            <div class="flex items-center justify-center bg-gray-100 rounded-lg h-24">
+                                <span class="text-gray-500 text-sm">+{{ data.pertemuan.foto_list.count|add:"-6" }} lainnya</span>
                             </div>
                             {% endif %}
                         </div>
@@ -192,81 +169,64 @@
                     {% endif %}
                     
                     <!-- Attendance Summary -->
-                    <div class="mb-3">
-                        <h6><i class="bi bi-person-check me-2"></i>Ringkasan Absensi:</h6>
-                        <div class="row text-center">
-                            <div class="col-3">
-                                <div class="card bg-success text-white">
-                                    <div class="card-body p-2">
-                                        <div class="fs-5 fw-bold">{{ data.stats.hadir }}</div>
-                                        <small>✅ Hadir</small>
-                                    </div>
-                                </div>
+                    <div class="mb-4">
+                        <h6 class="font-semibold text-gray-900 mb-2">
+                            <i class="bi bi-person-check mr-2"></i>Ringkasan Absensi:
+                        </h6>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="bg-green-600 text-white rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold mb-1">{{ data.stats.hadir }}</div>
+                                <small class="text-green-100">✅ Hadir</small>
                             </div>
-                            <div class="col-3">
-                                <div class="card bg-warning text-dark">
-                                    <div class="card-body p-2">
-                                        <div class="fs-5 fw-bold">{{ data.stats.sakit }}</div>
-                                        <small>🏥 Sakit</small>
-                                    </div>
-                                </div>
+                            <div class="bg-yellow-500 text-gray-900 rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold mb-1">{{ data.stats.sakit }}</div>
+                                <small class="text-yellow-100">🏥 Sakit</small>
                             </div>
-                            <div class="col-3">
-                                <div class="card bg-info text-white">
-                                    <div class="card-body p-2">
-                                        <div class="fs-5 fw-bold">{{ data.stats.izin }}</div>
-                                        <small>📝 Izin</small>
-                                    </div>
-                                </div>
+                            <div class="bg-cyan-600 text-white rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold mb-1">{{ data.stats.izin }}</div>
+                                <small class="text-cyan-100">📝 Izin</small>
                             </div>
-                            <div class="col-3">
-                                <div class="card bg-danger text-white">
-                                    <div class="card-body p-2">
-                                        <div class="fs-5 fw-bold">{{ data.stats.alpha }}</div>
-                                        <small>❌ Alpha</small>
-                                    </div>
-                                </div>
+                            <div class="bg-red-600 text-white rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold mb-1">{{ data.stats.alpha }}</div>
+                                <small class="text-red-100">❌ Alpha</small>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-muted text-end">
-                    <small>
-                        <i class="bi bi-clock me-1"></i>Dibuat {{ data.pertemuan.created_at|date:"d/m/Y H:i" }}
-                    </small>
+                <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+                    <div class="text-right text-sm text-gray-500">
+                        <i class="bi bi-clock mr-1"></i>Dibuat {{ data.pertemuan.created_at|date:"d/m/Y H:i" }}
+                    </div>
                 </div>
             </div>
             {% endfor %}
         {% else %}
             <!-- Empty State -->
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <i class="bi bi-journal-x text-muted" style="font-size: 4rem;"></i>
-                    <h4 class="mt-3 text-muted">Tidak Ada Data Pertemuan</h4>
-                    <p class="text-muted">
-                        Tidak ada pertemuan yang sesuai dengan filter yang dipilih.
-                    </p>
-                    <button type="button" onclick="resetFilters()" class="btn btn-primary">
-                        <i class="bi bi-arrow-clockwise me-2"></i>Reset Filter
-                    </button>
-                </div>
+            <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                <i class="bi bi-journal-x text-gray-400" style="font-size: 4rem;"></i>
+                <h4 class="mt-4 text-xl font-semibold text-gray-600">Tidak Ada Data Pertemuan</h4>
+                <p class="text-gray-500 mt-2">
+                    Tidak ada pertemuan yang sesuai dengan filter yang dipilih.
+                </p>
+                <button type="button" onclick="resetFilters()" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
+                    <i class="bi bi-arrow-clockwise mr-2"></i>Reset Filter
+                </button>
             </div>
         {% endif %}
     </div>
-</div>
 
 <!-- Image Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Dokumentasi Kegiatan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" class="img-fluid rounded" style="max-height: 70vh;">
-                <p id="modalCaption" class="mt-2 text-muted"></p>
-            </div>
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" onclick="closeImageModal(event)">
+    <div class="bg-white rounded-lg max-w-4xl max-h-screen overflow-auto m-4" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200">
+            <h5 class="text-lg font-semibold">Dokumentasi Kegiatan</h5>
+            <button type="button" onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg text-xl"></i>
+            </button>
+        </div>
+        <div class="p-4 text-center">
+            <img id="modalImage" src="" class="max-w-full h-auto rounded-lg" style="max-height: 70vh;">
+            <p id="modalCaption" class="mt-2 text-gray-600"></p>
         </div>
     </div>
 </div>
@@ -275,7 +235,13 @@
 function showImageModal(imageSrc, caption) {
     document.getElementById('modalImage').src = imageSrc;
     document.getElementById('modalCaption').textContent = caption || '';
-    new bootstrap.Modal(document.getElementById('imageModal')).show();
+    document.getElementById('imageModal').style.display = 'flex';
+}
+
+function closeImageModal(event) {
+    if (!event || event.target.id === 'imageModal' || event.target.tagName === 'BUTTON') {
+        document.getElementById('imageModal').style.display = 'none';
+    }
 }
 
 function resetFilters() {

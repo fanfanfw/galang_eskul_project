@@ -3,86 +3,193 @@
 {% block title %}Buat Akun Pelatih{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Buat Akun Pelatih Baru</h3>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.username.id_for_label }}">Username</label>
-                                    {{ form.username }}
-                                    {% if form.username.errors %}
-                                        <div class="text-danger">{{ form.username.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.email.id_for_label }}">Email</label>
-                                    {{ form.email }}
-                                    {% if form.email.errors %}
-                                        <div class="text-danger">{{ form.email.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.nama_lengkap.id_for_label }}">Nama Lengkap</label>
-                                    {{ form.nama_lengkap }}
-                                    {% if form.nama_lengkap.errors %}
-                                        <div class="text-danger">{{ form.nama_lengkap.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.no_telepon.id_for_label }}">No. Telepon</label>
-                                    {{ form.no_telepon }}
-                                    {% if form.no_telepon.errors %}
-                                        <div class="text-danger">{{ form.no_telepon.errors }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.alamat.id_for_label }}">Alamat</label>
-                                    {{ form.alamat }}
-                                    {% if form.alamat.errors %}
-                                        <div class="text-danger">{{ form.alamat.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.foto_profil.id_for_label }}">Foto Profil</label>
-                                    {{ form.foto_profil }}
-                                    {% if form.foto_profil.errors %}
-                                        <div class="text-danger">{{ form.foto_profil.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.password1.id_for_label }}">Password</label>
-                                    {{ form.password1 }}
-                                    {% if form.password1.errors %}
-                                        <div class="text-danger">{{ form.password1.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.password2.id_for_label }}">Konfirmasi Password</label>
-                                    {{ form.password2 }}
-                                    {% if form.password2.errors %}
-                                        <div class="text-danger">{{ form.password2.errors }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>
+            Buat Akun Pelatih Baru
+        </h1>
+        <p class="text-gray-600 mt-2">Tambahkan akun pelatih baru untuk sistem</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="bg-green-600 px-6 py-4">
+            <h2 class="text-xl font-semibold text-white">Form Akun Pelatih</h2>
+        </div>
+
+        <div class="p-6">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.username.errors }}</p>
+                            {% endif %}
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Buat Akun</button>
-                            <a href="{% url 'manage_users' %}" class="btn btn-secondary">Batal</a>
+
+                        <div>
+                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.email.errors }}</p>
+                            {% endif %}
                         </div>
-                    </form>
+
+                        <div>
+                            <label for="{{ form.nama_lengkap.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Nama Lengkap
+                            </label>
+                            {{ form.nama_lengkap }}
+                            {% if form.nama_lengkap.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.nama_lengkap.errors }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.no_telepon.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                No. Telepon
+                            </label>
+                            {{ form.no_telepon }}
+                            {% if form.no_telepon.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.no_telepon.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="{{ form.alamat.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Alamat
+                            </label>
+                            {{ form.alamat }}
+                            {% if form.alamat.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.alamat.errors }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.foto_profil.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Foto Profil
+                            </label>
+                            {{ form.foto_profil }}
+                            {% if form.foto_profil.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.foto_profil.errors }}</p>
+                            {% endif %}
+                            <p class="mt-1 text-sm text-gray-500">Format: JPG, PNG. Maksimal 2MB</p>
+                        </div>
+
+                        <div>
+                            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.password1.errors }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Konfirmasi Password
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.password2.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="flex space-x-4 pt-6 border-t border-gray-200">
+                    <button type="submit"
+                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                            </svg>
+                            Buat Akun
+                        </span>
+                    </button>
+                    <a href="{% url 'manage_users' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<style>
+/* Style Django form inputs */
+input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
+input[type="tel"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 0.2s;
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #059669;
+}
+</style>
 {% endblock %}

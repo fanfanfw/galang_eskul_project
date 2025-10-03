@@ -3,58 +3,138 @@
 {% block title %}Buat Eskul Baru{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Buat Eskul Baru</h3>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.nama_eskul.id_for_label }}">Nama Eskul <span class="text-danger">*</span></label>
-                                    {{ form.nama_eskul }}
-                                    {% if form.nama_eskul.errors %}
-                                        <div class="text-danger">{{ form.nama_eskul.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.pelatih.id_for_label }}">Pelatih</label>
-                                    {{ form.pelatih }}
-                                    {% if form.pelatih.errors %}
-                                        <div class="text-danger">{{ form.pelatih.errors }}</div>
-                                    {% endif %}
-                                    <small class="form-text text-muted">Pilih pelatih untuk eskul ini (opsional, bisa diubah nanti)</small>
-                                </div>
-                                <div class="form-check mb-3">
-                                    {{ form.is_active }}
-                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Buat Eskul Baru
+        </h1>
+        <p class="text-gray-600 mt-2">Tambahkan kegiatan ekstrakurikuler baru</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="bg-green-600 px-6 py-4">
+            <h2 class="text-xl font-semibold text-white">Form Eskul Baru</h2>
+        </div>
+
+        <div class="p-6">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="{{ form.nama_eskul.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Nama Eskul <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.nama_eskul }}
+                            {% if form.nama_eskul.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.nama_eskul.errors }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.pelatih.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Pelatih
+                            </label>
+                            {{ form.pelatih }}
+                            {% if form.pelatih.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.pelatih.errors }}</p>
+                            {% endif %}
+                            <p class="mt-1 text-sm text-gray-500">Pilih pelatih untuk eskul ini (opsional, bisa diubah nanti)</p>
+                        </div>
+
+                        <div class="flex items-center">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="ml-2 block text-sm text-gray-700">
                                         Aktif
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="{{ form.deskripsi.id_for_label }}">Deskripsi <span class="text-danger">*</span></label>
-                                    {{ form.deskripsi }}
-                                    {% if form.deskripsi.errors %}
-                                        <div class="text-danger">{{ form.deskripsi.errors }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Buat Eskul</button>
-                            <a href="{% url 'manage_eskul' %}" class="btn btn-secondary">Batal</a>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="{{ form.deskripsi.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Deskripsi <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.deskripsi }}
+                            {% if form.deskripsi.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.deskripsi.errors }}</p>
+                            {% endif %}
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <div class="flex space-x-4 pt-6 border-t border-gray-200">
+                    <button type="submit"
+                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Buat Eskul
+                        </span>
+                    </button>
+                    <a href="{% url 'manage_eskul' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<style>
+/* Style Django form inputs */
+input[type="text"], select, textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+</style>
 {% endblock %}

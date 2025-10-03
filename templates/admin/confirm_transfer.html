@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Konfirmasi Transfer - Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <!-- Header Section -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-700 p-3 rounded-xl shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Konfirmasi Transfer</h1>
+                        <p class="text-gray-600">Review detail transfer sebelum eksekusi</p>
+                    </div>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{% url 'admin_transfer_siswa' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Transfer Summary -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 mb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Detail Transfer
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Info Siswa -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Informasi Siswa</h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="font-semibold text-gray-900">{{ siswa.nama_siswa }}</p>
+                            <p class="text-gray-600">Kelas: {{ siswa.kelas }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transfer Direction -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Perpindahan Eskul</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-red-100 rounded-lg p-3 flex-1">
+                                    <p class="text-sm text-red-800 font-medium">Dari:</p>
+                                    <p class="font-semibold text-red-900">{{ eskul_lama.nama_eskul }}</p>
+                                    <p class="text-sm text-red-700">{{ eskul_lama.pelatih.nama_lengkap }}</p>
+                                </div>
+                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                                <div class="bg-green-100 rounded-lg p-3 flex-1">
+                                    <p class="text-sm text-green-800 font-medium">Ke:</p>
+                                    <p class="font-semibold text-green-900">{{ eskul_baru.nama_eskul }}</p>
+                                    <p class="text-sm text-green-700">{{ eskul_baru.pelatih.nama_lengkap }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Summary -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 mb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                Konversi Absensi
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <p class="text-3xl font-bold text-blue-600">{{ total_absensi }}</p>
+                    <p class="text-sm text-blue-800">Total Absensi</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 text-center">
+                    <p class="text-3xl font-bold text-green-600">{{ bisa_dikonversi }}</p>
+                    <p class="text-sm text-green-800">Bisa Dikonversi</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-4 text-center">
+                    <p class="text-3xl font-bold text-amber-600">{{ tidak_bisa_dikonversi }}</p>
+                    <p class="text-sm text-amber-800">Tidak Bisa Dikonversi</p>
+                </div>
+            </div>
+
+            {% if conversion_preview %}
+            <div class="space-y-2">
+                <h3 class="text-sm font-medium text-gray-700 mb-3">Detail Konversi:</h3>
+                <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
+                    {% for conversion in conversion_preview %}
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 hover:bg-gray-50">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm text-gray-600">{{ conversion.tanggal|date:"d M Y" }}</span>
+                            <span class="px-2 py-1 text-xs rounded-full
+                                {% if conversion.keterangan_lama == 'hadir' %}bg-green-100 text-green-800
+                                {% elif conversion.keterangan_lama == 'sakit' %}bg-yellow-100 text-yellow-800
+                                {% elif conversion.keterangan_lama == 'izin' %}bg-blue-100 text-blue-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ conversion.keterangan_lama|upper }}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            {% if conversion.bisa_dikonversi %}
+                                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="text-sm text-green-600">Bisa dikonversi</span>
+                            {% else %}
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <span class="text-sm text-amber-600">Tidak ada pertemuan</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Warning Alert -->
+        {% if tidak_bisa_dikonversi > 0 %}
+        <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 rounded-lg">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-amber-700">
+                        <strong>Perhatian:</strong> {{ tidak_bisa_dikonversi }} absensi tidak dapat dikonversi karena tidak ada pertemuan dengan tanggal yang sama di eskul tujuan.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <form method="post" action="{% url 'admin_confirm_transfer' %}">
+            {% csrf_token %}
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'admin_transfer_siswa' %}"
+                   class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>Konfirmasi Transfer</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

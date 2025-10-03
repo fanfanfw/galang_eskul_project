@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Count, Q, Avg
 import pandas as pd
 import io
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from .models import Eskul, Siswa, Pertemuan, Absensi, FotoKegiatan
 from accounts.models import CustomUser
@@ -290,13 +290,13 @@ def handle_create_pertemuan(request, eskul, siswa_list):
                 pelatih=request.user
             )
             
-            # Handle multiple photo uploads
-            if request.FILES.getlist('foto_kegiatan'):
-                for foto in request.FILES.getlist('foto_kegiatan'):
-                    FotoKegiatan.objects.create(
-                        pertemuan=pertemuan,
-                        foto=foto
-                    )
+            # Handle single photo upload
+            if request.FILES.get('foto_kegiatan'):
+                foto = request.FILES.get('foto_kegiatan')
+                FotoKegiatan.objects.create(
+                    pertemuan=pertemuan,
+                    foto=foto
+                )
             
             # Handle attendance
             hadir_count = 0
@@ -625,5 +625,187 @@ def export_pertemuan_excel(request):
     
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name='Laporan Pertemuan', index=False)
-    
+
     return response
+
+@login_required
+def admin_transfer_siswa_view(request):
+    if request.user.role != 'admin':
+        messages.error(request, 'Akses ditolak. Anda bukan admin.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        return handle_transfer_siswa(request)
+
+    # Get students and eskul lists
+    siswa_list = Siswa.objects.filter(is_active=True).select_related('eskul')
+    eskul_list = Eskul.objects.filter(is_active=True).select_related('pelatih')
+
+    context = {
+        'siswa_list': siswa_list,
+        'eskul_list': eskul_list,
+    }
+    return render(request, 'admin/transfer_siswa.html', context)
+
+def handle_transfer_siswa(request):
+    try:
+        with transaction.atomic():
+            siswa_id = request.POST.get('siswa_id')
+            eskul_tujuan_id = request.POST.get('eskul_tujuan_id')
+
+            if not siswa_id or not eskul_tujuan_id:
+                messages.error(request, 'Pilih siswa dan eskul tujuan.')
+                return redirect('admin_transfer_siswa')
+
+            siswa = get_object_or_404(Siswa, id=siswa_id)
+            eskul_lama = siswa.eskul
+            eskul_baru = get_object_or_404(Eskul, id=eskul_tujuan_id)
+
+            if eskul_lama == eskul_baru:
+                messages.error(request, 'Siswa sudah berada di eskul tersebut.')
+                return redirect('admin_transfer_siswa')
+
+            # Get all absensi for this student in old eskul
+            absensi_lama = Absensi.objects.filter(
+                siswa=siswa,
+                pertemuan__eskul=eskul_lama
+            ).select_related('pertemuan')
+
+            # Prepare conversion summary
+            converted_count = 0
+            not_found_count = 0
+
+            # Preview conversion (can be removed or saved to session)
+            conversion_preview = []
+            for absen in absensi_lama:
+                # Find matching pertemuan in new eskul by date
+                pertemuan_baru = Pertemuan.objects.filter(
+                    eskul=eskul_baru,
+                    tanggal=absen.pertemuan.tanggal
+                ).first()
+
+                if pertemuan_baru:
+                    conversion_preview.append({
+                        'tanggal': absen.pertemuan.tanggal,
+                        'keterangan_lama': absen.keterangan,
+                        'pertemuan_lama': absen.pertemuan,
+                        'pertemuan_baru': pertemuan_baru,
+                        'bisa_dikonversi': True
+                    })
+                    converted_count += 1
+                else:
+                    conversion_preview.append({
+                        'tanggal': absen.pertemuan.tanggal,
+                        'keterangan_lama': absen.keterangan,
+                        'pertemuan_lama': absen.pertemuan,
+                        'pertemuan_baru': None,
+                        'bisa_dikonversi': False
+                    })
+                    not_found_count += 1
+
+            # Prepare serializable conversion data for session
+            serializable_preview = []
+            for conversion in conversion_preview:
+                preview_item = {
+                    'tanggal': conversion['tanggal'].isoformat(),
+                    'keterangan_lama': conversion['keterangan_lama'],
+                    'bisa_dikonversi': conversion['bisa_dikonversi']
+                }
+                if conversion['bisa_dikonversi']:
+                    preview_item['pertemuan_baru_id'] = conversion['pertemuan_baru'].id
+                else:
+                    preview_item['pertemuan_baru_id'] = None
+                serializable_preview.append(preview_item)
+
+            # Keep original conversion_preview for template display
+            template_preview = []
+            for conversion in conversion_preview:
+                template_item = {
+                    'tanggal': conversion['tanggal'],
+                    'keterangan_lama': conversion['keterangan_lama'],
+                    'bisa_dikonversi': conversion['bisa_dikonversi'],
+                    'pertemuan_lama': conversion['pertemuan_lama']
+                }
+                if conversion['bisa_dikonversi']:
+                    template_item['pertemuan_baru'] = conversion['pertemuan_baru']
+                else:
+                    template_item['pertemuan_baru'] = None
+                template_preview.append(template_item)
+
+            # Store data in session for confirmation
+            request.session['transfer_data'] = {
+                'siswa_id': siswa_id,
+                'eskul_lama_id': eskul_lama.id,
+                'eskul_baru_id': eskul_baru.id,
+                'siswa_nama': siswa.nama_siswa,
+                'eskul_lama_nama': eskul_lama.nama_eskul,
+                'eskul_baru_nama': eskul_baru.nama_eskul,
+                'conversion_preview': serializable_preview,
+                'total_absensi': absensi_lama.count(),
+                'bisa_dikonversi': converted_count,
+                'tidak_bisa_dikonversi': not_found_count
+            }
+
+            return render(request, 'admin/confirm_transfer.html', {
+                'siswa': siswa,
+                'eskul_lama': eskul_lama,
+                'eskul_baru': eskul_baru,
+                'conversion_preview': template_preview,
+                'total_absensi': absensi_lama.count(),
+                'bisa_dikonversi': converted_count,
+                'tidak_bisa_dikonversi': not_found_count
+            })
+
+    except Exception as e:
+        messages.error(request, f'Error saat memproses transfer: {str(e)}')
+        return redirect('admin_transfer_siswa')
+
+@login_required
+def admin_confirm_transfer_view(request):
+    if request.user.role != 'admin':
+        messages.error(request, 'Akses ditolak. Anda bukan admin.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        transfer_data = request.session.get('transfer_data')
+        if not transfer_data:
+            messages.error(request, 'Data transfer tidak ditemukan. Silakan mulai ulang.')
+            return redirect('admin_transfer_siswa')
+
+        try:
+            with transaction.atomic():
+                siswa = get_object_or_404(Siswa, id=transfer_data['siswa_id'])
+                eskul_lama = get_object_or_404(Eskul, id=transfer_data['eskul_lama_id'])
+                eskul_baru = get_object_or_404(Eskul, id=transfer_data['eskul_baru_id'])
+
+                # Update student's eskul
+                siswa.eskul = eskul_baru
+                siswa.save()
+
+                # Convert attendance records
+                converted_count = 0
+                for conversion in transfer_data['conversion_preview']:
+                    if conversion['bisa_dikonversi']:
+                        # Create new absensi in new eskul
+                        Absensi.objects.create(
+                            pertemuan_id=conversion['pertemuan_baru_id'],
+                            siswa=siswa,
+                            hadir=conversion['keterangan_lama'] == 'hadir',
+                            keterangan=conversion['keterangan_lama']
+                        )
+                        converted_count += 1
+
+                # Clear session data
+                del request.session['transfer_data']
+
+                messages.success(request,
+                    f'Siswa {siswa.nama_siswa} berhasil dipindah dari {eskul_lama.nama_eskul} '
+                    f'ke {eskul_baru.nama_eskul}. {converted_count} absensi berhasil dikonversi.')
+                return redirect('admin_manage_students')
+
+        except Exception as e:
+            messages.error(request, f'Error saat mengeksekusi transfer: {str(e)}')
+            return redirect('admin_transfer_siswa')
+
+    # If not POST, redirect to transfer page
+    return redirect('admin_transfer_siswa')

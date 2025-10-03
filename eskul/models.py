@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 class Eskul(models.Model):
     nama_eskul = models.CharField(max_length=100)
@@ -7,9 +8,18 @@ class Eskul(models.Model):
     pelatih = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, limit_choices_to={'role': 'pelatih'}, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         return self.nama_eskul
+
+    def clean(self):
+        # Validate that one pelatih can only have one eskul
+        if self.pelatih:
+            existing_eskul = Eskul.objects.filter(pelatih=self.pelatih).exclude(pk=self.pk)
+            if existing_eskul.exists():
+                raise ValidationError({
+                    'pelatih': f'{self.pelatih.nama_lengkap} sudah menjadi pelatih untuk eskul {existing_eskul.first().nama_eskul}. Satu pelatih hanya bisa menangani satu eskul.'
+                })
 
 class Siswa(models.Model):
     nama_siswa = models.CharField(max_length=100)
