@@ -5,6 +5,10 @@
   "scripts": {
     "build-css": "tailwindcss -i ./static/css/tailwind.css -o ./static/css/tailwind-output.css --watch",
     "build-css-prod": "tailwindcss -i ./static/css/tailwind.css -o ./static/css/tailwind-output.css --minify",
+    "build-js": "esbuild ./static/js/app.js --bundle --outfile=./static/js/app.bundle.js --watch",
+    "build-js-prod": "esbuild ./static/js/app.js --bundle --outfile=./static/js/app.bundle.js --minify",
+    "build": "npm run build-js-prod && npm run build-css-prod",
+    "dev": "npm run build-js & npm run build-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +25,13 @@
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.10",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "alpinejs": "^3.15.0",
+    "sweetalert2": "^11.23.0"
   }
 }
