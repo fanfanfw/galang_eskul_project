@@ -45,15 +45,14 @@ class EskulForm(forms.ModelForm):
 
         # Exclude pelatih yang sudah punya eskul (kecuali untuk instance saat ini)
         if self.instance and self.instance.pk and self.instance.pelatih:
+            # Get pelatih yang sudah punya eskul
+            used_pelatih_ids = Eskul.objects.filter(pelatih__isnull=False).exclude(pk=self.instance.pk).values_list('pelatih_id', flat=True)
             # Exclude pelatih yang sudah punya eskul, tapi allow current pelatih
-            available_pelatih = available_pelatih.exclude(
-                eskul__isnull=False
-            ).distinct() | CustomUser.objects.filter(id=self.instance.pelatih.id)
+            available_pelatih = available_pelatih.exclude(id__in=used_pelatih_ids)
         else:
             # Exclude pelatih yang sudah punya eskul
-            available_pelatih = available_pelatih.exclude(
-                eskul__isnull=False
-            )
+            used_pelatih_ids = Eskul.objects.filter(pelatih__isnull=False).values_list('pelatih_id', flat=True)
+            available_pelatih = available_pelatih.exclude(id__in=used_pelatih_ids)
 
         self.fields['pelatih'].queryset = available_pelatih.distinct()
         self.fields['pelatih'].empty_label = "Belum Ada Pelatih"

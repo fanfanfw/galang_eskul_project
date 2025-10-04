@@ -9,6 +9,7 @@ urlpatterns = [
     # User Management
     path('create-user/', views.create_user, name='create_user'),
     path('manage-users/', views.manage_users, name='manage_users'),
+    path('edit-user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
     # Eskul Management
     path('manage-eskul/', views.manage_eskul, name='manage_eskul'),

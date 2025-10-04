@@ -241,6 +241,105 @@ def admin_delete_student_view(request, student_id):
 
 # PELATIH VIEWS
 @login_required
+def pelatih_students_view(request):
+    if request.user.role != 'pelatih':
+        messages.error(request, 'Akses ditolak. Anda bukan pelatih.')
+        return redirect('dashboard')
+
+    try:
+        eskul = Eskul.objects.get(pelatih=request.user)
+    except Eskul.DoesNotExist:
+        messages.error(request, 'Anda belum ditugaskan ke eskul manapun.')
+        return redirect('dashboard')
+
+    # Get filter parameters
+    kelas = request.GET.get('kelas')
+    attendance_filter = request.GET.get('attendance_filter')
+
+    # Base queryset
+    siswa_list = Siswa.objects.filter(eskul=eskul, is_active=True).order_by('nama_siswa')
+    absensi_query = Absensi.objects.filter(siswa__eskul=eskul).select_related('siswa', 'pertemuan')
+
+    # Apply kelas filter
+    if kelas:
+        siswa_list = siswa_list.filter(kelas=kelas)
+        absensi_query = absensi_query.filter(siswa__kelas=kelas)
+
+    # Calculate attendance statistics
+    attendance_data = []
+    for siswa in siswa_list:
+        siswa_absensi = absensi_query.filter(siswa=siswa)
+        total_pertemuan = siswa_absensi.count()
+        hadir = siswa_absensi.filter(keterangan='hadir').count()
+        sakit = siswa_absensi.filter(keterangan='sakit').count()
+        izin = siswa_absensi.filter(keterangan='izin').count()
+        alpha = siswa_absensi.filter(keterangan='alpha').count()
+
+        persentase_hadir = (hadir / total_pertemuan * 100) if total_pertemuan > 0 else 0
+
+        # Determine attendance status
+        if persentase_hadir >= 80:
+            status = 'baik'
+        elif persentase_hadir >= 60:
+            status = 'perlu_perhatian'
+        else:
+            status = 'buruk'
+
+        student_data = {
+            'siswa': siswa,
+            'total_pertemuan': total_pertemuan,
+            'hadir': hadir,
+            'sakit': sakit,
+            'izin': izin,
+            'alpha': alpha,
+            'persentase_hadir': round(persentase_hadir, 2),
+            'status': status
+        }
+
+        # Apply attendance filter
+        if attendance_filter:
+            if attendance_filter == 'sakit' and sakit > 0:
+                attendance_data.append(student_data)
+            elif attendance_filter == 'izin' and izin > 0:
+                attendance_data.append(student_data)
+            elif attendance_filter == 'alpha' and alpha > 0:
+                attendance_data.append(student_data)
+            elif attendance_filter == 'buruk' and status == 'buruk':
+                attendance_data.append(student_data)
+            elif attendance_filter == 'perlu_perhatian' and status == 'perlu_perhatian':
+                attendance_data.append(student_data)
+            elif attendance_filter == 'baik' and status == 'baik':
+                attendance_data.append(student_data)
+        else:
+            attendance_data.append(student_data)
+
+    # Sort by attendance percentage (descending)
+    attendance_data.sort(key=lambda x: x['persentase_hadir'], reverse=True)
+
+    # Calculate attendance statistics
+    good_attendance_count = len([d for d in attendance_data if d['persentase_hadir'] >= 80])
+    medium_attendance_count = len([d for d in attendance_data if 60 <= d['persentase_hadir'] < 80])
+    poor_attendance_count = len([d for d in attendance_data if d['persentase_hadir'] < 60])
+
+    # Get unique kelas list
+    kelas_list = sorted(set(siswa.kelas for siswa in siswa_list))
+
+    context = {
+        'eskul': eskul,
+        'attendance_data': attendance_data,
+        'good_attendance_count': good_attendance_count,
+        'medium_attendance_count': medium_attendance_count,
+        'poor_attendance_count': poor_attendance_count,
+        'kelas_list': kelas_list,
+        'filters': {
+            'attendance_filter': attendance_filter,
+            'kelas': kelas
+        }
+    }
+
+    return render(request, 'pelatih/students.html', context)
+
+@login_required
 def pelatih_create_pertemuan_view(request):
     if request.user.role != 'pelatih':
         messages.error(request, 'Akses ditolak. Anda bukan pelatih.')
@@ -352,32 +451,25 @@ def admin_attendance_report_view(request):
     if request.user.role != 'admin':
         messages.error(request, 'Akses ditolak. Anda bukan admin.')
         return redirect('dashboard')
-    
+
     # Get filter parameters
     eskul_id = request.GET.get('eskul')
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
     kelas = request.GET.get('kelas')
-    
+    attendance_filter = request.GET.get('attendance_filter')
+
     # Base queryset
     siswa_list = Siswa.objects.filter(is_active=True).select_related('eskul')
     absensi_query = Absensi.objects.select_related('siswa', 'pertemuan')
-    
+
     # Apply filters
     if eskul_id:
         siswa_list = siswa_list.filter(eskul_id=eskul_id)
         absensi_query = absensi_query.filter(siswa__eskul_id=eskul_id)
-    
+
     if kelas:
         siswa_list = siswa_list.filter(kelas=kelas)
         absensi_query = absensi_query.filter(siswa__kelas=kelas)
-        
-    if start_date:
-        absensi_query = absensi_query.filter(pertemuan__tanggal__gte=start_date)
-        
-    if end_date:
-        absensi_query = absensi_query.filter(pertemuan__tanggal__lte=end_date)
-    
+
     # Calculate attendance statistics
     attendance_data = []
     for siswa in siswa_list:
@@ -387,9 +479,9 @@ def admin_attendance_report_view(request):
         sakit = siswa_absensi.filter(keterangan='sakit').count()
         izin = siswa_absensi.filter(keterangan='izin').count()
         alpha = siswa_absensi.filter(keterangan='alpha').count()
-        
+
         persentase_hadir = (hadir / total_pertemuan * 100) if total_pertemuan > 0 else 0
-        
+
         attendance_data.append({
             'siswa': siswa,
             'total_pertemuan': total_pertemuan,
@@ -399,15 +491,33 @@ def admin_attendance_report_view(request):
             'alpha': alpha,
             'persentase_hadir': round(persentase_hadir, 2)
         })
-    
+
+    # Apply attendance filter
+    if attendance_filter:
+        filtered_attendance_data = []
+        for data in attendance_data:
+            if attendance_filter == 'baik' and data['persentase_hadir'] >= 80:
+                filtered_attendance_data.append(data)
+            elif attendance_filter == 'perlu_perhatian' and 60 <= data['persentase_hadir'] < 80:
+                filtered_attendance_data.append(data)
+            elif attendance_filter == 'buruk' and data['persentase_hadir'] < 60:
+                filtered_attendance_data.append(data)
+            elif attendance_filter == 'sakit' and data['sakit'] > 0:
+                filtered_attendance_data.append(data)
+            elif attendance_filter == 'izin' and data['izin'] > 0:
+                filtered_attendance_data.append(data)
+            elif attendance_filter == 'alpha' and data['alpha'] > 0:
+                filtered_attendance_data.append(data)
+        attendance_data = filtered_attendance_data
+
     # Sort by attendance percentage (descending)
     attendance_data.sort(key=lambda x: x['persentase_hadir'], reverse=True)
-    
+
     # Calculate attendance statistics
     good_attendance_count = len([d for d in attendance_data if d['persentase_hadir'] >= 80])
     medium_attendance_count = len([d for d in attendance_data if 60 <= d['persentase_hadir'] < 80])
     poor_attendance_count = len([d for d in attendance_data if d['persentase_hadir'] < 60])
-    
+
     context = {
         'attendance_data': attendance_data,
         'good_attendance_count': good_attendance_count,
@@ -417,9 +527,8 @@ def admin_attendance_report_view(request):
         'kelas_list': sorted(set(Siswa.objects.values_list('kelas', flat=True))),
         'filters': {
             'eskul_id': eskul_id,
-            'start_date': start_date,
-            'end_date': end_date,
-            'kelas': kelas
+            'kelas': kelas,
+            'attendance_filter': attendance_filter
         }
     }
     

@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin/export/pertemuan/', views.export_pertemuan_excel, name='export_pertemuan_excel'),
     
     # Pelatih URLs
+    path('pelatih/students/', views.pelatih_students_view, name='pelatih_students'),
     path('pelatih/pertemuan/create/', views.pelatih_create_pertemuan_view, name='pelatih_create_pertemuan'),
     path('pelatih/pertemuan/history/', views.pelatih_history_pertemuan_view, name='pelatih_history_pertemuan'),
 ]
