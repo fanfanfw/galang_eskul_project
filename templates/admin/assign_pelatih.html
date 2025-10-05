@@ -1,152 +1,222 @@
 {% extends 'base.html' %}
 
-{% block title %}Tugaskan Pelatih - {{ eskul.nama_eskul }}{% endblock %}
+{% block title %}Tugaskan Pelatih - {{ eskul.nama_eskul }} - Admin{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-            <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-            Tugaskan Pelatih
-        </h1>
-        <p class="text-gray-600 mt-2">Eskul: <span class="font-semibold">{{ eskul.nama_eskul }}</span></p>
-    </div>
-
-    <!-- Current Pelatih Card -->
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <svg class="w-6 h-6 text-blue-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-            </div>
-            <div class="ml-4 flex-1">
-                <h2 class="text-lg font-semibold text-blue-900 mb-3">Pelatih Saat Ini</h2>
-                {% if eskul.pelatih %}
-                    <div class="flex items-center bg-white rounded-lg p-4 shadow-sm">
-                        {% if eskul.pelatih.foto_profil %}
-                            <img src="{{ eskul.pelatih.foto_profil.url }}" alt="Foto"
-                                 class="w-12 h-12 rounded-full object-cover mr-4">
-                        {% else %}
-                            <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mr-4">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </div>
-                        {% endif %}
-                        <div>
-                            <p class="font-semibold text-gray-900">{{ eskul.pelatih.nama_lengkap }}</p>
-                            <p class="text-sm text-gray-600">{{ eskul.pelatih.email }}</p>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="bg-white rounded-lg p-4 shadow-sm">
-                        <div class="flex items-center text-gray-500">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
-                            <span>Belum ada pelatih yang ditugaskan</span>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Form Card -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div class="bg-green-600 px-6 py-4">
-            <h2 class="text-xl font-semibold text-white">Pilih Pelatih Baru</h2>
-        </div>
-
-        <div class="p-6">
-            <form method="post" class="space-y-6">
-                {% csrf_token %}
-
+<div class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                 <div>
-                    <label for="pelatih_id" class="block text-sm font-medium text-gray-700 mb-2">
-                        Pilih Pelatih
-                    </label>
-                    <select name="pelatih_id" id="pelatih_id" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200">
-                        <option value="">-- Pilih Pelatih --</option>
-                        {% for pelatih in available_pelatih %}
-                            <option value="{{ pelatih.id }}" {% if pelatih.id == eskul.pelatih.id %}selected{% endif %}>
-                                {{ pelatih.nama_lengkap }} ({{ pelatih.username }})
-                            </option>
-                        {% endfor %}
-                    </select>
+                    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-user-plus text-blue-600 mr-3"></i>
+                        Tugaskan Pelatih
+                    </h1>
+                    <p class="text-gray-600 mt-1">Assign pelatih untuk eskul {{ eskul.nama_eskul }}</p>
                 </div>
-
-                {% if available_pelatih %}
-                    <!-- Preview Pelatih -->
-                    <div id="pelatih-preview" class="hidden">
-                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                            <h3 class="text-sm font-semibold text-gray-700 mb-3">Preview Pelatih Terpilih</h3>
-                            <div id="preview-content"></div>
-                        </div>
-                    </div>
-                {% endif %}
-
-                <div class="flex space-x-4">
-                    <button type="submit"
-                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Tugaskan Pelatih
-                        </span>
-                    </button>
-                    <a href="{% url 'manage_eskul' %}"
-                       class="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Batal
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
                     </a>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
 
-            {% if not available_pelatih %}
-                <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Current Eskul Info -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tasks text-blue-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ eskul.nama_eskul }}</h3>
+                    <p class="text-gray-600 mt-1">{{ eskul.deskripsi|truncatewords:20 }}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-users mr-2 text-blue-500"></i>
+                            {{ eskul.siswa_list.count }} siswa
                         </div>
-                        <div class="ml-3">
-                            <p class="text-sm text-yellow-800">
-                                <strong>Peringatan:</strong> Tidak ada pelatih yang tersedia.
-                                <a href="{% url 'create_user' %}" class="font-medium text-yellow-900 underline hover:text-yellow-800">Buat akun pelatih baru</a> terlebih dahulu.
-                            </p>
+                        <div class="flex items-center">
+                            {% if eskul.is_active %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Aktif
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Nonaktif
+                                </span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
+
+        <!-- Current Pelatih Card -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4 flex-1">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-3">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        Pelatih Saat Ini
+                    </h3>
+                    {% if eskul.pelatih %}
+                        <div class="flex items-center bg-white rounded-lg p-4 border border-blue-200">
+                            <div class="flex-shrink-0">
+                                {% if eskul.pelatih.foto_profil %}
+                                    <img src="{{ eskul.pelatih.foto_profil.url }}" alt="Foto {{ eskul.pelatih.nama_lengkap }}"
+                                         class="w-12 h-12 rounded-full object-cover border-2 border-blue-200">
+                                {% else %}
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <p class="font-semibold text-gray-900">{{ eskul.pelatih.nama_lengkap }}</p>
+                                <p class="text-sm text-gray-600 flex items-center mt-1">
+                                    <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                                    {{ eskul.pelatih.email }}
+                                </p>
+                                <p class="text-sm text-gray-600 flex items-center mt-1">
+                                    <i class="fas fa-user mr-2 text-blue-500"></i>
+                                    {{ eskul.pelatih.username }}
+                                </p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-exclamation-triangle mr-2 text-yellow-500"></i>
+                                <span>Belum ada pelatih yang ditugaskan untuk eskul ini</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignment Form -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-user-plus text-blue-500 mr-2"></i>
+                    Pilih Pelatih Baru
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">Pilih pelatih yang akan membina eskul ini</p>
+            </div>
+
+            <form method="post" class="p-6">
+                {% csrf_token %}
+
+                <div class="space-y-6">
+                    <!-- Pelatih Selection -->
+                    <div>
+                        <label for="pelatih_id" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-chalkboard-teacher mr-2 text-blue-500"></i>
+                            Pilih Pelatih <span class="text-red-500">*</span>
+                        </label>
+                        <select name="pelatih_id" id="pelatih_id" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                            <option value="">-- Pilih Pelatih --</option>
+                            {% for pelatih in available_pelatih %}
+                                <option value="{{ pelatih.id }}" {% if pelatih.id == eskul.pelatih.id %}selected{% endif %}>
+                                    {{ pelatih.nama_lengkap }} ({{ pelatih.username }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Pilih dari daftar pelatih yang tersedia
+                        </p>
+                    </div>
+
+                    {% if available_pelatih %}
+                        <!-- Preview Pelatih -->
+                        <div id="pelatih-preview" class="hidden">
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                                    <i class="fas fa-eye mr-2 text-blue-500"></i>
+                                    Preview Pelatih Terpilih
+                                </h3>
+                                <div id="preview-content"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 mt-8 pt-6 border-t border-gray-200">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        Batal
+                    </a>
+                    <button type="submit" id="submit-btn" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed" {% if not available_pelatih %}disabled{% endif %}>
+                        <i class="fas fa-user-check mr-2"></i>
+                        Tugaskan Pelatih
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if not available_pelatih %}
+            <!-- No Pelatih Available -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-semibold text-yellow-800 mb-2">
+                            <i class="fas fa-user-slash mr-2"></i>
+                            Tidak Ada Pelatih Tersedia
+                        </h3>
+                        <p class="text-sm text-yellow-700 mb-4">
+                            Belum ada pelatih yang terdaftar atau semua pelatih sudah ditugaskan.
+                        </p>
+                        <a href="{% url 'create_user' %}" class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Buat Akun Pelatih Baru
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 
+{% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const pelatihSelect = document.getElementById('pelatih_id');
     const preview = document.getElementById('pelatih-preview');
     const previewContent = document.getElementById('preview-content');
 
+    // Check if elements exist
+    if (!pelatihSelect || !preview || !previewContent) {
+        return;
+    }
+
     // Pelatih data untuk preview
     const pelatihData = {
         {% for pelatih in available_pelatih %}
         {{ pelatih.id }}: {
-            nama: '{{ pelatih.nama_lengkap }}',
-            username: '{{ pelatih.username }}',
-            email: '{{ pelatih.email }}',
-            no_telepon: '{{ pelatih.no_telepon|default:"Tidak ada" }}',
-            foto: {% if pelatih.foto_profil %}'{{ pelatih.foto_profil.url }}'{% else %}null{% endif %}
+            nama: '{{ pelatih.nama_lengkap|escapejs }}',
+            username: '{{ pelatih.username|escapejs }}',
+            email: '{{ pelatih.email|escapejs }}',
+            no_telepon: '{{ pelatih.no_telepon|default:"Tidak ada"|escapejs }}',
+            foto: {% if pelatih.foto_profil %}'{{ pelatih.foto_profil.url|escapejs }}'{% else %}null{% endif %}
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     };
@@ -159,31 +229,141 @@ document.addEventListener('DOMContentLoaded', function() {
             let fotoHtml = '';
 
             if (pelatih.foto) {
-                fotoHtml = `<img src="${pelatih.foto}" alt="Foto" class="w-12 h-12 rounded-full object-cover mr-4">`;
+                fotoHtml = `<img src="${pelatih.foto}" alt="Foto ${pelatih.nama}" class="w-12 h-12 rounded-full object-cover border-2 border-blue-200">`;
             } else {
-                fotoHtml = `<div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mr-4">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
+                fotoHtml = `<div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-white"></i>
                 </div>`;
             }
 
             previewContent.innerHTML = `
-                <div class="flex items-center bg-white rounded-lg p-3 shadow-sm">
-                    ${fotoHtml}
-                    <div>
+                <div class="flex items-center bg-white rounded-lg p-4 border border-blue-200">
+                    <div class="flex-shrink-0">
+                        ${fotoHtml}
+                    </div>
+                    <div class="ml-4 flex-1">
                         <p class="font-semibold text-gray-900">${pelatih.nama}</p>
-                        <p class="text-sm text-gray-600">Username: ${pelatih.username}</p>
-                        <p class="text-sm text-gray-600">Email: ${pelatih.email}</p>
-                        <p class="text-sm text-gray-600">Telepon: ${pelatih.no_telepon}</p>
+                        <p class="text-sm text-gray-600 flex items-center mt-1">
+                            <i class="fas fa-user mr-2 text-blue-500"></i>
+                            ${pelatih.username}
+                        </p>
+                        <p class="text-sm text-gray-600 flex items-center mt-1">
+                            <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                            ${pelatih.email}
+                        </p>
+                        <p class="text-sm text-gray-600 flex items-center mt-1">
+                            <i class="fas fa-phone mr-2 text-blue-500"></i>
+                            ${pelatih.no_telepon}
+                        </p>
                     </div>
                 </div>
             `;
-            preview.classList.remove('hidden');
+            
+            // Show preview with animation
+            setTimeout(() => {
+                preview.classList.remove('hidden');
+            }, 100);
         } else {
             preview.classList.add('hidden');
         }
     });
+
+    // Auto-show preview if pelatih is already selected
+    if (pelatihSelect.value) {
+        pelatihSelect.dispatchEvent(new Event('change'));
+    }
+
+    // Form validation
+    const form = pelatihSelect.closest('form');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    if (form && submitBtn) {
+        // Enable/disable submit button based on selection
+        function updateSubmitButton() {
+            if (pelatihSelect.value && pelatihSelect.value !== '') {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        }
+
+        pelatihSelect.addEventListener('change', updateSubmitButton);
+        updateSubmitButton(); // Initial check
+
+        // Form submission confirmation
+        form.addEventListener('submit', function(e) {
+            const selectedPelatih = pelatihSelect.options[pelatihSelect.selectedIndex];
+            if (selectedPelatih && selectedPelatih.value) {
+                const confirmation = confirm(`Apakah Anda yakin ingin menugaskan ${selectedPelatih.text} sebagai pelatih untuk eskul ini?`);
+                if (!confirmation) {
+                    e.preventDefault();
+                }
+            }
+        });
+    }
 });
 </script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Style Django form inputs */
+select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: all 0.2s;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+}
+
+select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+select:disabled {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+/* Button hover effects */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: inherit;
+}
+
+/* Preview animation */
+#pelatih-preview {
+    transition: all 0.3s ease;
+}
+
+#pelatih-preview.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#pelatih-preview:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
 {% endblock %}

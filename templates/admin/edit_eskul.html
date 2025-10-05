@@ -1,126 +1,232 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Eskul - {{ eskul.nama_eskul }}{% endblock %}
+{% block title %}Edit Eskul - {{ eskul.nama_eskul }} - Admin{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-            <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-            </svg>
-            Edit Eskul: {{ eskul.nama_eskul }}
-        </h1>
-        <p class="text-gray-600 mt-2">Perbarui informasi kegiatan ekstrakurikuler</p>
+<div class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-edit text-blue-600 mr-3"></i>
+                        Edit Eskul
+                    </h1>
+                    <p class="text-gray-600 mt-1">Edit informasi eskul {{ eskul.nama_eskul }}</p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Form Card -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div class="bg-green-600 px-6 py-4">
-            <h2 class="text-xl font-semibold text-white">Form Edit Eskul</h2>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Current Eskul Info Card -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-tasks text-blue-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ eskul.nama_eskul }}</h3>
+                    <p class="text-gray-600 mt-1">{{ eskul.deskripsi|truncatewords:20 }}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-users mr-2 text-blue-500"></i>
+                            {{ eskul.siswa_list.count }} siswa
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-calendar mr-2 text-blue-500"></i>
+                            {{ eskul.pertemuan_list.count }} pertemuan
+                        </div>
+                        <div class="flex items-center">
+                            {% if eskul.is_active %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Aktif
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Nonaktif
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="p-6">
-            <form method="post" class="space-y-6">
+        <!-- Edit Form -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-edit text-blue-500 mr-2"></i>
+                    Form Edit Eskul
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">Perbarui informasi eskul sesuai kebutuhan</p>
+            </div>
+
+            <form method="post" class="p-6">
                 {% csrf_token %}
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div class="space-y-6">
+                        <!-- Nama Eskul -->
                         <div>
                             <label for="{{ form.nama_eskul.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tasks mr-2 text-blue-500"></i>
                                 Nama Eskul <span class="text-red-500">*</span>
                             </label>
                             {{ form.nama_eskul }}
                             {% if form.nama_eskul.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.nama_eskul.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.nama_eskul.errors }}
+                                </p>
                             {% endif %}
                         </div>
 
+                        <!-- Pelatih -->
                         <div>
                             <label for="{{ form.pelatih.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-chalkboard-teacher mr-2 text-blue-500"></i>
                                 Pelatih
                             </label>
                             {{ form.pelatih }}
                             {% if form.pelatih.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.pelatih.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.pelatih.errors }}
+                                </p>
                             {% endif %}
-                        </div>
-
-                        <div class="flex items-center">
-                            {{ form.is_active }}
-                            <label for="{{ form.is_active.id_for_label }}" class="ml-2 block text-sm text-gray-700">
-                                Aktif
-                            </label>
+                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Pilih pelatih yang akan membina eskul ini
+                            </p>
                         </div>
                     </div>
 
                     <!-- Right Column -->
                     <div class="space-y-6">
+                        <!-- Deskripsi -->
                         <div>
                             <label for="{{ form.deskripsi.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-align-left mr-2 text-blue-500"></i>
                                 Deskripsi <span class="text-red-500">*</span>
                             </label>
                             {{ form.deskripsi }}
                             {% if form.deskripsi.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.deskripsi.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.deskripsi.errors }}
+                                </p>
                             {% endif %}
+                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Jelaskan tujuan dan kegiatan eskul ini
+                            </p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Info Eskul Card -->
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <svg class="w-6 h-6 text-blue-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <h3 class="text-lg font-semibold text-blue-900 mb-4">Informasi Eskul</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="bg-white rounded-lg p-3">
-                                    <p class="text-sm text-gray-600">Total Siswa</p>
-                                    <p class="text-lg font-semibold text-gray-900">{{ eskul.siswa_list.count }} siswa</p>
-                                </div>
-                                <div class="bg-white rounded-lg p-3">
-                                    <p class="text-sm text-gray-600">Total Pertemuan</p>
-                                    <p class="text-lg font-semibold text-gray-900">{{ eskul.pertemuan_list.count }} pertemuan</p>
-                                </div>
-                                <div class="bg-white rounded-lg p-3">
-                                    <p class="text-sm text-gray-600">Dibuat</p>
-                                    <p class="text-lg font-semibold text-gray-900">{{ eskul.created_at|date:"d F Y" }}</p>
+                    <!-- Status Aktif - Full Width -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center space-x-3">
+                                {{ form.is_active }}
+                                <div>
+                                    <label for="{{ form.is_active.id_for_label }}" class="block text-sm font-medium text-gray-900">
+                                        <i class="fas fa-toggle-on mr-2 text-blue-500"></i>
+                                        Status Eskul Aktif
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1">Hilangkan centang untuk menonaktifkan eskul ini</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex space-x-4 pt-6 border-t border-gray-200">
-                    <button type="submit"
-                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                            Update Eskul
-                        </span>
-                    </button>
-                    <a href="{% url 'manage_eskul' %}"
-                       class="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 mt-8 pt-6 border-t border-gray-200">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
                         Batal
                     </a>
+                    <button type="submit" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <i class="fas fa-save mr-2"></i>
+                        Simpan Perubahan
+                    </button>
                 </div>
             </form>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Statistik Eskul
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-users text-white text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-600">Total Siswa</p>
+                                    <p class="text-lg font-semibold text-gray-900">{{ eskul.siswa_list.count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-calendar text-white text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-600">Total Pertemuan</p>
+                                    <p class="text-lg font-semibold text-gray-900">{{ eskul.pertemuan_list.count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 border border-blue-200">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-calendar-plus text-white text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-gray-600">Dibuat</p>
+                                    <p class="text-sm font-semibold text-gray-900">{{ eskul.created_at|date:"d/m/Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+{% block extra_css %}
 <style>
 /* Style Django form inputs */
 input[type="text"], select, textarea {
@@ -135,8 +241,8 @@ input[type="text"], select, textarea {
 
 input[type="text"]:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 textarea {
@@ -155,13 +261,14 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background-color: #10b981;
-    border-color: #10b981;
+    background-color: #2563eb;
+    border-color: #2563eb;
 }
 
 input[type="checkbox"]:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 </style>
+{% endblock %}
 {% endblock %}
