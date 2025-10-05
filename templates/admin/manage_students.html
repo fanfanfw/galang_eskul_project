@@ -173,59 +173,7 @@
                             <span class="text-sm text-gray-600">data</span>
                         </div>
 
-                        <!-- Export Dropdown -->
-                        <div class="relative inline-block text-left" x-data="{ exportDropdownOpen: false }">
-                            <button type="button" @click="exportDropdownOpen = !exportDropdownOpen"
-                                    @click.away="exportDropdownOpen = false"
-                                    class="inline-flex items-center px-3 py-1.5 text-sm border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="fas fa-download mr-2"></i>
-                                Export
-                                <i class="fas fa-chevron-down ml-2 text-xs"></i>
-                            </button>
-
-                            <!-- Dropdown Menu -->
-                            <div x-show="exportDropdownOpen"
-                                 x-transition:enter="transition ease-out duration-100"
-                                 x-transition:enter-start="transform opacity-0 scale-95"
-                                 x-transition:enter-end="transform opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-75"
-                                 x-transition:leave-start="transform opacity-100 scale-100"
-                                 x-transition:leave-end="transform opacity-0 scale-95"
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 shadow-lg z-10">
-                                <div class="py-1">
-                                    <!-- PDF Reports -->
-                                    <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                                        Laporan PDF
-                                    </div>
-                                    <a href="{% url 'export_siswa_pdf' %}"
-                                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                        <i class="fas fa-file-pdf text-red-500 mr-3"></i>
-                                        Data Semua Siswa
-                                    </a>
-                                    <a href="{% url 'export_siswa_pdf' %}?eskul_id="
-                                       x-bind:href="`{% url 'export_siswa_pdf' %}?eskul_id=${eskulFilter || ''}`"
-                                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                        <i class="fas fa-file-pdf text-red-500 mr-3"></i>
-                                        Data Sesuai Filter
-                                    </a>
-                                    <a href="{% url 'export_surat_keterangan_pdf' %}"
-                                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                        <i class="fas fa-file-invoice text-red-500 mr-3"></i>
-                                        Surat Keterangan (Semua)
-                                    </a>
-
-                                    <!-- Separator -->
-                                    <hr class="my-1">
-
-                                    <!-- PDF Report Umum -->
-                                    <a href="{% url 'export_umum_pdf' %}"
-                                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                        <i class="fas fa-file-pdf text-red-500 mr-3"></i>
-                                        Laporan Umum Eskul
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Export feature disabled -->
                     </div>
                 </div>
             </div>

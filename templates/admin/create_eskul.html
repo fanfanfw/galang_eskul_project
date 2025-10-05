@@ -1,99 +1,171 @@
 {% extends 'base.html' %}
 
-{% block title %}Buat Eskul Baru{% endblock %}
+{% block title %}Buat Eskul Baru - Admin{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-            <svg class="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Buat Eskul Baru
-        </h1>
-        <p class="text-gray-600 mt-2">Tambahkan kegiatan ekstrakurikuler baru</p>
+<div class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
+                        Buat Eskul Baru
+                    </h1>
+                    <p class="text-gray-600 mt-1">Tambahkan kegiatan ekstrakurikuler baru</p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Form Card -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div class="bg-green-600 px-6 py-4">
-            <h2 class="text-xl font-semibold text-white">Form Eskul Baru</h2>
-        </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Create Form -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-plus text-blue-500 mr-2"></i>
+                    Form Pembuatan Eskul Baru
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">Lengkapi data untuk membuat eskul baru</p>
+            </div>
 
-        <div class="p-6">
-            <form method="post" class="space-y-6">
+            <form method="post" class="p-6">
                 {% csrf_token %}
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div class="space-y-6">
-                        <div>
+                        <!-- Nama Eskul -->
+                        <div class="form-field-hover">
                             <label for="{{ form.nama_eskul.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tasks mr-2 text-blue-500"></i>
                                 Nama Eskul <span class="text-red-500">*</span>
                             </label>
                             {{ form.nama_eskul }}
                             {% if form.nama_eskul.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.nama_eskul.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.nama_eskul.errors }}
+                                </p>
                             {% endif %}
                         </div>
 
-                        <div>
+                        <!-- Pelatih -->
+                        <div class="form-field-hover">
                             <label for="{{ form.pelatih.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-chalkboard-teacher mr-2 text-blue-500"></i>
                                 Pelatih
                             </label>
                             {{ form.pelatih }}
                             {% if form.pelatih.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.pelatih.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.pelatih.errors }}
+                                </p>
                             {% endif %}
-                            <p class="mt-1 text-sm text-gray-500">Pilih pelatih untuk eskul ini (opsional, bisa diubah nanti)</p>
-                        </div>
-
-                        <div class="flex items-center">
-                            {{ form.is_active }}
-                            <label for="{{ form.is_active.id_for_label }}" class="ml-2 block text-sm text-gray-700">
-                                        Aktif
-                            </label>
+                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Pilih pelatih untuk eskul ini (opsional, bisa diubah nanti)
+                            </p>
                         </div>
                     </div>
 
                     <!-- Right Column -->
                     <div class="space-y-6">
-                        <div>
+                        <!-- Deskripsi -->
+                        <div class="form-field-hover">
                             <label for="{{ form.deskripsi.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-align-left mr-2 text-blue-500"></i>
                                 Deskripsi <span class="text-red-500">*</span>
                             </label>
                             {{ form.deskripsi }}
                             {% if form.deskripsi.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ form.deskripsi.errors }}</p>
+                                <p class="mt-1 text-sm text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                    {{ form.deskripsi.errors }}
+                                </p>
                             {% endif %}
+                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Jelaskan tujuan dan kegiatan eskul ini
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Status Aktif - Full Width -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center space-x-3">
+                                {{ form.is_active }}
+                                <div>
+                                    <label for="{{ form.is_active.id_for_label }}" class="block text-sm font-medium text-gray-900">
+                                        <i class="fas fa-toggle-on mr-2 text-blue-500"></i>
+                                        Status Eskul Aktif
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1">Centang untuk mengaktifkan eskul ini</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex space-x-4 pt-6 border-t border-gray-200">
-                    <button type="submit"
-                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Buat Eskul
-                        </span>
-                    </button>
-                    <a href="{% url 'manage_eskul' %}"
-                       class="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 mt-8 pt-6 border-t border-gray-200">
+                    <a href="{% url 'manage_eskul' %}" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
                         Batal
                     </a>
+                    <button type="submit" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Buat Eskul
+                    </button>
                 </div>
             </form>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        Tips Pembuatan Eskul
+                    </h3>
+                    <div class="text-sm text-blue-700 space-y-2">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle mr-2 mt-0.5 text-blue-600"></i>
+                            <span>Buat nama eskul yang menarik dan mudah diingat</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-align-left mr-2 mt-0.5 text-blue-600"></i>
+                            <span>Tulis deskripsi yang jelas tentang tujuan eskul</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-chalkboard-teacher mr-2 mt-0.5 text-blue-600"></i>
+                            <span>Pelatih dapat ditambahkan atau diubah kapan saja</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-users mr-2 mt-0.5 text-blue-600"></i>
+                            <span>Eskul yang aktif akan terlihat oleh siswa dalam pendaftaran</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+{% block extra_css %}
 <style>
 /* Style Django form inputs */
 input[type="text"], select, textarea {
@@ -108,8 +180,8 @@ input[type="text"], select, textarea {
 
 input[type="text"]:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 textarea {
@@ -128,13 +200,41 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background-color: #10b981;
-    border-color: #10b981;
+    background-color: #2563eb;
+    border-color: #2563eb;
 }
 
 input[type="checkbox"]:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Required field asterisk animation */
+.text-red-500 {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Form field hover effect */
+.form-field-hover:hover label {
+    color: #2563eb;
+}
+
+.form-field-hover:hover .fas {
+    transform: scale(1.1);
+}
+
+.form-field-hover .fas {
+    transition: transform 0.2s ease;
 }
 </style>
+{% endblock %}
 {% endblock %}
