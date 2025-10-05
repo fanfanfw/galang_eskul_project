@@ -256,9 +256,18 @@ def pelatih_students_view(request):
     kelas = request.GET.get('kelas')
     attendance_filter = request.GET.get('attendance_filter')
 
-    # Base queryset
-    siswa_list = Siswa.objects.filter(eskul=eskul, is_active=True).order_by('nama_siswa')
+    # Base querysets
+    siswa_base = Siswa.objects.filter(eskul=eskul, is_active=True).order_by('nama_siswa')
+    kelas_list = sorted(siswa_base.values_list('kelas', flat=True).distinct())
+
+    siswa_list = siswa_base
     absensi_query = Absensi.objects.filter(siswa__eskul=eskul).select_related('siswa', 'pertemuan')
+
+    # Apply search filter
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        siswa_list = siswa_list.filter(nama_siswa__icontains=search_query)
+        absensi_query = absensi_query.filter(siswa__nama_siswa__icontains=search_query)
 
     # Apply kelas filter
     if kelas:
@@ -321,9 +330,6 @@ def pelatih_students_view(request):
     medium_attendance_count = len([d for d in attendance_data if 60 <= d['persentase_hadir'] < 80])
     poor_attendance_count = len([d for d in attendance_data if d['persentase_hadir'] < 60])
 
-    # Get unique kelas list
-    kelas_list = sorted(set(siswa.kelas for siswa in siswa_list))
-
     context = {
         'eskul': eskul,
         'attendance_data': attendance_data,
@@ -333,7 +339,8 @@ def pelatih_students_view(request):
         'kelas_list': kelas_list,
         'filters': {
             'attendance_filter': attendance_filter,
-            'kelas': kelas
+            'kelas': kelas,
+            'search': search_query
         }
     }
 

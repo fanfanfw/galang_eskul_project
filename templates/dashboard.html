@@ -1,32 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - Sistem Eskul SD{% endblock %}
+{% block title %}Dashboard - SDN Ciporeat{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-    <!-- Header Section -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
+<div class="min-h-screen bg-gray-50">
+    <!-- Welcome Section -->
+    <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-r from-green-600 to-green-700 p-3 rounded-xl shadow-lg">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-                        <p class="text-gray-600">Selamat datang kembali, {{ user.nama_lengkap }}!</p>
-                    </div>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Selamat datang, {{ user.nama_lengkap }}</h1>
+                    <p class="text-gray-600 mt-1">Dashboard {{ user.get_role_display }} - {{ today|date:"l, d F Y" }}</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        <i class="fas fa-user-circle mr-1"></i>
                         {{ user.get_role_display }}
                     </span>
-                    <div class="text-right">
-                        <p class="text-sm text-gray-500">Hari ini</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ today|date:"l, d F Y" }}</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -34,338 +24,308 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% if user.role == 'admin' %}
-        <!-- Admin Dashboard -->
-
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Total Pelatih -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Pelatih</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ total_pelatih }}</p>
-                        <div class="flex items-center mt-2 text-green-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
-                            <span class="text-sm">Aktif</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chalkboard-teacher text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Pelatih</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_pelatih }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Eskul -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Eskul</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ total_eskul }}</p>
-                        <div class="flex items-center mt-2 text-green-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-sm">Tersedia</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tasks text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Eskul Tersedia</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_eskul }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Siswa -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Siswa</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ total_siswa }}</p>
-                        <div class="flex items-center mt-2 text-blue-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                            </svg>
-                            <span class="text-sm">Terdaftar</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Siswa Terdaftar</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_siswa }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Pertemuan Hari Ini -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Pertemuan Hari Ini</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ pertemuan_hari_ini }}</p>
-                        <div class="flex items-center mt-2 text-orange-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-sm">Jadwal</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar-day text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-orange-500 to-red-500 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Pertemuan Hari Ini</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ pertemuan_hari_ini }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div class="flex items-center mb-6">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-2 rounded-lg mr-3">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Aksi Cepat</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="{% url 'admin_manage_students' %}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors group">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-users text-white text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 text-center">Kelola Siswa</span>
+                    </a>
+
+                    <a href="{% url 'manage_users' %}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition-colors group">
+                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mb-3 group-hover:bg-yellow-600 transition-colors">
+                            <i class="fas fa-chalkboard-teacher text-white text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 text-center">Kelola Pelatih</span>
+                    </a>
+
+                    <a href="{% url 'manage_eskul' %}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors group">
+                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-tasks text-white text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 text-center">Kelola Eskul</span>
+                    </a>
+
+                    <a href="{% url 'admin_import_students' %}" class="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition-colors group">
+                        <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center mb-3 group-hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-file-upload text-white text-lg"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 text-center">Import Data</span>
+                    </a>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900">Aksi Cepat</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a href="{% url 'manage_eskul' %}" class="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
+            <!-- Recent Activities -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Aktivitas Terkini</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-plus text-white text-xs"></i>
                         </div>
-                        <div>
-                            <p class="font-semibold">Kelola Eskul</p>
-                            <p class="text-sm opacity-90">Atur kegiatan eskul</p>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">Eskul Pramuka ditambahkan</p>
+                            <p class="text-xs text-gray-500">2 jam lalu</p>
                         </div>
                     </div>
-                </a>
 
-                <a href="{% url 'manage_users' %}" class="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-file-import text-white text-xs"></i>
                         </div>
-                        <div>
-                            <p class="font-semibold">Kelola Pelatih</p>
-                            <p class="text-sm opacity-90">Atur data pelatih</p>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">Import data siswa berhasil</p>
+                            <p class="text-xs text-gray-500">5 jam lalu</p>
                         </div>
                     </div>
-                </a>
 
-                <a href="{% url 'admin_manage_students' %}" class="group bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                            </svg>
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-check text-white text-xs"></i>
                         </div>
-                        <div>
-                            <p class="font-semibold">Kelola Siswa</p>
-                            <p class="text-sm opacity-90">Atur data siswa</p>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">Pelatih baru terdaftar</p>
+                            <p class="text-xs text-gray-500">1 hari lalu</p>
                         </div>
                     </div>
-                </a>
-
-                <a href="{% url 'admin_import_students' %}" class="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Import Siswa</p>
-                            <p class="text-sm opacity-90">Upload data siswa</p>
-                        </div>
-                    </div>
-                </a>
+                </div>
             </div>
         </div>
 
         {% elif user.role == 'pelatih' %}
         <!-- Pelatih Dashboard -->
 
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Eskul Saya -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Eskul Saya</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ my_eskul_count }}</p>
-                        <div class="flex items-center mt-2 text-green-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-sm">Aktif</span>
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <!-- Eskul Dibina -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tasks text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Eskul Dibina</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ my_eskul_count }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Siswa -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Siswa</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ my_siswa_count }}</p>
-                        <div class="flex items-center mt-2 text-blue-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                            <span class="text-sm">Binaan</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Siswa</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ my_siswa_count }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Pertemuan -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Pertemuan</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ my_pertemuan_count }}</p>
-                        <div class="flex items-center mt-2 text-orange-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            <span class="text-sm">Terlaksana</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar-check text-white text-lg"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Pertemuan</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ my_pertemuan_count }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div class="flex items-center mb-6">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-2 rounded-lg mr-3">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Aksi Cepat</h2>
-            </div>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- My Eskul List -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Eskul Yang Saya Bina</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="{% url 'pelatih_create_pertemuan' %}" class="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Catat Pertemuan</p>
-                            <p class="text-sm opacity-90">Tambah catatan baru</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="{% url 'pelatih_history_pertemuan' %}" class="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Riwayat Pertemuan</p>
-                            <p class="text-sm opacity-90">Lihat catatan lama</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="{% url 'pelatih_students' %}" class="group bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Lihat Siswa</p>
-                            <p class="text-sm opacity-90">Data siswa binaan</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- My Eskul List -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <div class="flex items-center mb-6">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 p-2 rounded-lg mr-3">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Eskul Yang Saya Bina</h2>
-            </div>
-
-            {% if my_eskul_list %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {% for eskul in my_eskul_list %}
-                    <div class="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                        <div class="flex items-start justify-between mb-4">
-                            <h3 class="text-lg font-bold text-green-800">{{ eskul.nama_eskul }}</h3>
-                            <div class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                Aktif
+                {% if my_eskul_list %}
+                    <div class="space-y-4">
+                        {% for eskul in my_eskul_list %}
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-start justify-between mb-3">
+                                <h3 class="text-lg font-semibold text-gray-900">{{ eskul.nama_eskul }}</h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Aktif
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3">{{ eskul.deskripsi|truncatewords:15 }}</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-gray-500">
+                                    <i class="fas fa-users text-blue-500 mr-2"></i>
+                                    <span class="text-sm">{{ eskul.siswa_list.count }} siswa</span>
+                                </div>
+                                <a href="#" class="inline-flex items-center px-3 py-1.5 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
+                                    Detail
+                                    <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                </a>
                             </div>
                         </div>
-                        <p class="text-gray-600 mb-4">{{ eskul.deskripsi|truncatewords:15 }}</p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center text-gray-500">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                <span class="text-sm">{{ eskul.siswa_list.count }} siswa</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tasks text-gray-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Eskul</h3>
+                        <p class="text-gray-500 text-sm">Anda belum memiliki eskul yang dibina.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions & Activities -->
+            <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Aksi Cepat</h2>
+                    <div class="space-y-3">
+                        <a href="{% url 'pelatih_create_pertemuan' %}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors group">
+                            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors">
+                                <i class="fas fa-plus text-white"></i>
                             </div>
-                            <a href="#" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-                                Detail
-                            </a>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Catat Pertemuan</p>
+                                <p class="text-xs text-gray-500">Tambah pertemuan baru</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'pelatih_history_pertemuan' %}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition-colors group">
+                            <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center mr-3 group-hover:bg-yellow-600 transition-colors">
+                                <i class="fas fa-history text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Riwayat Pertemuan</p>
+                                <p class="text-xs text-gray-500">Lihat pertemuan lama</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'pelatih_students' %}" class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors group">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Data Siswa</p>
+                                <p class="text-xs text-gray-500">Kelola data siswa</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Aktivitas Terkini</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Pertemuan Pramuka</p>
+                                <p class="text-xs text-gray-500">Kemarin</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-alt text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Laporan Bulanan</p>
+                                <p class="text-xs text-gray-500">2 hari lalu</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-plus text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Siswa Baru</p>
+                                <p class="text-xs text-gray-500">3 hari lalu</p>
+                            </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-            {% else %}
-                <div class="text-center py-12">
-                    <div class="bg-gray-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Belum Ada Eskul</h3>
-                    <p class="text-gray-600 mb-4">Anda belum memiliki eskul yang dibina.</p>
-                    <p class="text-gray-500">Hubungi admin untuk mendapatkan eskul.</p>
-                </div>
-            {% endif %}
+            </div>
         </div>
         {% endif %}
     </div>

@@ -3,40 +3,30 @@
 {% block title %}Kelola Siswa - Admin{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+<div class="min-h-screen bg-gray-50">
     <!-- Header Section -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
+    <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-xl shadow-lg">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Kelola Siswa</h1>
-                        <p class="text-gray-600">Kelola data siswa dan kegiatan eskul mereka</p>
-                    </div>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-users-cog text-blue-600 mr-3"></i>
+                        Kelola Siswa
+                    </h1>
+                    <p class="text-gray-600 mt-1">Kelola data siswa dan kegiatan eskul mereka</p>
                 </div>
-                <div class="flex space-x-3">
-                    <a href="{% url 'admin_import_students' %}" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        <span>Import Siswa</span>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <a href="{% url 'admin_import_students' %}" class="inline-flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                        <i class="fas fa-file-upload mr-2"></i>
+                        Import Siswa
                     </a>
-                    <a href="{% url 'admin_transfer_siswa' %}" class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                        </svg>
-                        <span>Transfer Siswa</span>
+                    <a href="{% url 'admin_transfer_siswa' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-exchange-alt mr-2"></i>
+                        Transfer Siswa
                     </a>
-                    <a href="{% url 'dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        <span>Kembali</span>
+                    <a href="{% url 'dashboard' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
                     </a>
                 </div>
             </div>
@@ -44,256 +34,312 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <!-- Total Siswa -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Siswa</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ siswa_list|length }}</p>
-                        <div class="flex items-center mt-2 text-blue-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
-                            <span class="text-sm">Terdaftar</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-white"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Siswa</p>
+                        <p class="text-xl font-bold text-gray-900">{{ siswa_list|length }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Eskul -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Eskul</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ eskul_list|length }}</p>
-                        <div class="flex items-center mt-2 text-green-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-sm">Tersedia</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tasks text-white"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Eskul</p>
+                        <p class="text-xl font-bold text-gray-900">{{ eskul_list|length }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total Kelas -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Kelas</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ total_kelas }}</p>
-                        <div class="flex items-center mt-2 text-purple-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                            <span class="text-sm">Aktif</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-school text-white"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Kelas</p>
+                        <p class="text-xl font-bold text-gray-900">{{ total_kelas }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Siswa Aktif -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Siswa Aktif</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ siswa_aktif }}</p>
-                        <div class="flex items-center mt-2 text-orange-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-sm">Aktif</span>
+            <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user-check text-white"></i>
                         </div>
                     </div>
-                    <div class="bg-gradient-to-br from-orange-500 to-red-500 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Siswa Aktif</p>
+                        <p class="text-xl font-bold text-gray-900">{{ siswa_aktif }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Filter and Search -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div class="flex items-center mb-6">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-2 rounded-lg mr-3">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Filter & Pencarian</h2>
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0 mb-4">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-filter text-blue-500 mr-2"></i>
+                    Filter & Pencarian
+                </h2>
+                <button type="button" onclick="resetFilters()" class="inline-flex items-center px-3 py-2 text-sm border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-undo text-sm mr-2"></i>
+                    Reset
+                </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Search Input -->
                 <div>
-                    <label for="filterEskul" class="block text-sm font-medium text-gray-700 mb-2">Filter Eskul:</label>
-                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200" id="filterEskul">
+                    <label for="searchNama" class="block text-sm font-medium text-gray-700 mb-1">Cari Siswa:</label>
+                    <div class="relative">
+                        <input type="text" id="searchNama" placeholder="Nama siswa..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Eskul Filter -->
+                <div>
+                    <label for="filterEskul" class="block text-sm font-medium text-gray-700 mb-1">Eskul:</label>
+                    <select id="filterEskul" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Semua Eskul</option>
                         {% for eskul in eskul_list %}
                         <option value="{{ eskul.id }}">{{ eskul.nama_eskul }}</option>
                         {% endfor %}
                     </select>
                 </div>
+                
+                <!-- Class Filter -->
                 <div>
-                    <label for="filterKelas" class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas:</label>
-                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200" id="filterKelas">
+                    <label for="filterKelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas:</label>
+                    <select id="filterKelas" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Semua Kelas</option>
                         {% for kelas in kelas_list %}
                         <option value="{{ kelas }}">{{ kelas }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div>
-                    <label for="searchNama" class="block text-sm font-medium text-gray-700 mb-2">Cari Nama:</label>
-                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200" id="searchNama" placeholder="Masukkan nama siswa...">
-                </div>
             </div>
         </div>
 
         <!-- Students Table -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-900">Daftar Siswa</h2>
-                <p class="text-sm text-gray-600">Total {{ siswa_list|length }} siswa terdaftar</p>
+        <div x-data="studentsTable()" class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <!-- Table Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-table text-blue-500 mr-2"></i>
+                            Daftar Siswa
+                        </h2>
+                        <p class="text-sm text-gray-600">Total <span x-text="filteredCount"></span> siswa dari {{ siswa_list|length }} siswa</p>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                        <!-- Per Page Selector -->
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm text-gray-600 whitespace-nowrap">Tampilkan:</label>
+                            <select x-model="perPage" @change="currentPage = 1" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="text-sm text-gray-600">data</span>
+                        </div>
+
+                        <!-- Export Button -->
+                        <button type="button" class="inline-flex items-center px-3 py-1.5 text-sm border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-download mr-2"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
             </div>
 
+            <!-- Table Content -->
             <div class="overflow-x-auto">
-                <table class="w-full" id="studentsTable">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Siswa</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Eskul</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pelatih</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tgl Daftar</th>
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for siswa in siswa_list %}
-                        <tr data-eskul="{{ siswa.eskul.id }}" data-kelas="{{ siswa.kelas }}" data-nama="{{ siswa.nama_siswa|lower }}" class="hover:bg-gray-50 transition-colors duration-200">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ forloop.counter }}</td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="text-sm font-semibold text-gray-900">{{ siswa.nama_siswa }}</div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ siswa.kelas }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ siswa.eskul.nama_eskul }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ siswa.eskul.pelatih.nama_lengkap }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                {% if siswa.is_active %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        Aktif
-                                    </span>
-                                {% else %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        Non-Aktif
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-600">{{ siswa.created_at|date:"d/m/Y" }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors duration-200"
-                                        onclick="confirmDelete({{ siswa.id }}, '{{ siswa.nama_siswa }}', '{{ siswa.kelas }}')" title="Hapus">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                    </svg>
+                {% if siswa_list %}
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">No</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Siswa</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Kelas</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Eskul</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Pelatih</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Tgl Daftar</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <template x-for="(student, index) in paginatedData" :key="index">
+                                <tr class="hover:bg-gray-50 transition-colors" x-transition>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900" x-text="((currentPage - 1) * perPage) + index + 1"></td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-user text-blue-600 text-sm"></i>
+                                            </div>
+                                            <div class="text-sm font-medium text-gray-900" x-text="student.name"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800" x-text="student.class"></span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900" x-text="student.eskul"></div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900" x-text="student.coach"></div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-center">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                                              :class="student.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                                            <i :class="student.is_active ? 'fas fa-check' : 'fas fa-times'" class="mr-1"></i>
+                                            <span x-text="student.is_active ? 'Aktif' : 'Non-Aktif'"></span>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-center">
+                                        <div class="text-sm text-gray-600" x-text="student.created_date"></div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-center">
+                                        <button type="button" 
+                                                @click="confirmDelete(student.id, student.name, student.class)"
+                                                class="inline-flex items-center p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                                                title="Hapus">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination Controls -->
+                    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                            <div class="text-sm text-gray-700">
+                                Menampilkan <span x-text="startRecord" class="font-medium"></span> - <span x-text="endRecord" class="font-medium"></span> dari <span x-text="filteredCount" class="font-medium"></span> siswa
+                            </div>
+                            
+                            <div class="flex items-center space-x-1" x-show="totalPages > 1">
+                                <!-- First Page -->
+                                <button @click="currentPage = 1" :disabled="currentPage === 1" 
+                                        class="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-angle-double-left"></i>
                                 </button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="8" class="px-6 py-12 text-center">
-                                <div class="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Belum Ada Siswa</h3>
-                                <p class="text-gray-600 mb-6">Tidak ada siswa yang terdaftar saat ini.</p>
-                                <a href="{% url 'admin_import_students' %}" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center space-x-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <span>Import Siswa Sekarang</span>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                
+                                <!-- Previous Page -->
+                                <button @click="currentPage--" :disabled="currentPage === 1" 
+                                        class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-angle-left mr-1"></i>
+                                    <span class="hidden sm:inline">Prev</span>
+                                </button>
+
+                                <!-- Page Numbers -->
+                                <template x-for="page in visiblePages" :key="page">
+                                    <button @click="currentPage = page"
+                                            :class="currentPage === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-100 text-gray-700'"
+                                            class="px-3 py-1 text-sm border rounded transition-colors"
+                                            x-text="page"></button>
+                                </template>
+
+                                <!-- Next Page -->
+                                <button @click="currentPage++" :disabled="currentPage === totalPages" 
+                                        class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span class="hidden sm:inline">Next</span>
+                                    <i class="fas fa-angle-right ml-1"></i>
+                                </button>
+                                
+                                <!-- Last Page -->
+                                <button @click="currentPage = totalPages" :disabled="currentPage === totalPages" 
+                                        class="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-gray-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Siswa</h3>
+                        <p class="text-gray-500 mb-6">Tidak ada siswa yang terdaftar saat ini.</p>
+                        <a href="{% url 'admin_import_students' %}" class="inline-flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                            <i class="fas fa-file-upload mr-2"></i>
+                            Import Siswa Sekarang
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 transform transition-all">
+<div x-data="deleteModal()" x-show="showModal" x-cloak 
+     class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex items-center justify-center"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95"
+         @click.away="closeModal()">
         <div class="p-6">
             <div class="text-center">
-                <div class="bg-orange-100 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                    <svg class="w-10 h-10 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Yakin ingin menghapus siswa?</h3>
-                <p id="deleteStudentInfo" class="text-gray-600 mb-4"></p>
+                <p class="text-gray-600 mb-4" x-text="studentInfo"></p>
                 <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
                     <p class="text-red-700 text-sm">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
                         <strong>Perhatian:</strong> Data absensi siswa ini juga akan ikut terhapus!
                     </p>
                 </div>
                 <div class="flex space-x-3">
-                    <button onclick="closeDeleteModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <button @click="closeModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
                         Batal
                     </button>
-                    <a id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 inline-flex items-center justify-center space-x-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
+                    <a :href="deleteUrl" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-trash mr-2"></i>
                         <span>Ya, Hapus</span>
                     </a>
                 </div>
@@ -302,56 +348,180 @@
     </div>
 </div>
 
+{% block extra_js %}
 <script>
-// Filter and Search Functions
-document.addEventListener('DOMContentLoaded', function() {
-    const filterEskul = document.getElementById('filterEskul');
-    const filterKelas = document.getElementById('filterKelas');
-    const searchNama = document.getElementById('searchNama');
-    const table = document.getElementById('studentsTable');
-    const rows = table.querySelectorAll('tbody tr');
+function resetFilters() {
+    document.getElementById('searchNama').value = '';
+    document.getElementById('filterEskul').value = '';
+    document.getElementById('filterKelas').value = '';
+    
+    // Trigger Alpine.js to refresh the data
+    window.dispatchEvent(new CustomEvent('filter-reset'));
+}
 
-    function filterTable() {
-        const eskulFilter = filterEskul.value;
-        const kelasFilter = filterKelas.value;
-        const namaFilter = searchNama.value.toLowerCase();
+// Alpine.js component for students table with advanced pagination and filtering
+function studentsTable() {
+    return {
+        currentPage: 1,
+        perPage: 25,
+        searchTerm: '',
+        eskulFilter: '',
+        kelasFilter: '',
+        studentsData: [
+            {% for siswa in siswa_list %}
+            {
+                id: {{ siswa.id }},
+                name: '{{ siswa.nama_siswa|escapejs }}',
+                class: '{{ siswa.kelas }}',
+                eskul: '{{ siswa.eskul.nama_eskul|escapejs }}',
+                eskul_id: '{{ siswa.eskul.id }}',
+                coach: '{{ siswa.eskul.pelatih.nama_lengkap|escapejs }}',
+                is_active: {{ siswa.is_active|yesno:"true,false" }},
+                created_date: '{{ siswa.created_at|date:"d/m/Y" }}'
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
 
-        rows.forEach(row => {
-            if (row.children.length === 1) return; // Skip empty row
+        get filteredData() {
+            return this.studentsData.filter(student => {
+                const nameMatch = !this.searchTerm || student.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+                const eskulMatch = !this.eskulFilter || student.eskul_id === this.eskulFilter;
+                const kelasMatch = !this.kelasFilter || student.class === this.kelasFilter;
+                
+                return nameMatch && eskulMatch && kelasMatch;
+            });
+        },
 
-            const eskulMatch = !eskulFilter || row.dataset.eskul === eskulFilter;
-            const kelasMatch = !kelasFilter || row.dataset.kelas === kelasFilter;
-            const namaMatch = !namaFilter || row.dataset.nama.includes(namaFilter);
+        get filteredCount() {
+            return this.filteredData.length;
+        },
 
-            if (eskulMatch && kelasMatch && namaMatch) {
-                row.style.display = '';
+        get totalPages() {
+            return Math.ceil(this.filteredCount / this.perPage);
+        },
+
+        get paginatedData() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.filteredData.slice(start, end);
+        },
+
+        get startRecord() {
+            if (this.filteredCount === 0) return 0;
+            return (this.currentPage - 1) * this.perPage + 1;
+        },
+
+        get endRecord() {
+            const end = this.currentPage * this.perPage;
+            return end > this.filteredCount ? this.filteredCount : end;
+        },
+
+        get visiblePages() {
+            const pages = [];
+            const total = this.totalPages;
+            const current = this.currentPage;
+            
+            if (total <= 7) {
+                for (let i = 1; i <= total; i++) {
+                    pages.push(i);
+                }
             } else {
-                row.style.display = 'none';
+                if (current <= 4) {
+                    for (let i = 1; i <= 5; i++) {
+                        pages.push(i);
+                    }
+                    pages.push('...');
+                    pages.push(total);
+                } else if (current >= total - 3) {
+                    pages.push(1);
+                    pages.push('...');
+                    for (let i = total - 4; i <= total; i++) {
+                        pages.push(i);
+                    }
+                } else {
+                    pages.push(1);
+                    pages.push('...');
+                    for (let i = current - 1; i <= current + 1; i++) {
+                        pages.push(i);
+                    }
+                    pages.push('...');
+                    pages.push(total);
+                }
             }
-        });
+            return pages.filter(page => page !== '...' || pages.indexOf(page) === pages.lastIndexOf(page));
+        },
+
+        confirmDelete(studentId, studentName, studentClass) {
+            // Get the delete modal component and trigger it
+            const deleteModalComponent = Alpine.$data(document.querySelector('[x-data*="deleteModal"]'));
+            if (deleteModalComponent) {
+                deleteModalComponent.openModal(studentId, studentName, studentClass);
+            }
+        },
+
+        init() {
+            // Watch for filter changes from DOM elements
+            this.$watch('perPage', () => {
+                this.currentPage = 1;
+            });
+
+            // Listen for external filter updates
+            const searchInput = document.getElementById('searchNama');
+            const eskulSelect = document.getElementById('filterEskul');
+            const kelasSelect = document.getElementById('filterKelas');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    this.searchTerm = e.target.value;
+                    this.currentPage = 1;
+                });
+            }
+
+            if (eskulSelect) {
+                eskulSelect.addEventListener('change', (e) => {
+                    this.eskulFilter = e.target.value;
+                    this.currentPage = 1;
+                });
+            }
+
+            if (kelasSelect) {
+                kelasSelect.addEventListener('change', (e) => {
+                    this.kelasFilter = e.target.value;
+                    this.currentPage = 1;
+                });
+            }
+
+            // Listen for reset event
+            window.addEventListener('filter-reset', () => {
+                this.searchTerm = '';
+                this.eskulFilter = '';
+                this.kelasFilter = '';
+                this.currentPage = 1;
+            });
+        }
     }
-
-    filterEskul.addEventListener('change', filterTable);
-    filterKelas.addEventListener('change', filterTable);
-    searchNama.addEventListener('input', filterTable);
-});
-
-// Delete Functions
-function confirmDelete(studentId, studentName, studentClass) {
-    document.getElementById('deleteStudentInfo').textContent = `${studentName} (${studentClass})`;
-    document.getElementById('confirmDeleteBtn').href = `/dashboard/admin/students/delete/${studentId}/`;
-    document.getElementById('deleteModal').classList.remove('hidden');
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
-}
+// Alpine.js component for delete modal
+function deleteModal() {
+    return {
+        showModal: false,
+        studentInfo: '',
+        deleteUrl: '',
 
-// Close modal when clicking outside
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeDeleteModal();
+        openModal(studentId, studentName, studentClass) {
+            this.studentInfo = `${studentName} (${studentClass})`;
+            this.deleteUrl = `/dashboard/admin/students/delete/${studentId}/`;
+            this.showModal = true;
+        },
+
+        closeModal() {
+            this.showModal = false;
+            this.studentInfo = '';
+            this.deleteUrl = '';
+        }
     }
-});
+}
 </script>
+{% endblock %}
 {% endblock %}
